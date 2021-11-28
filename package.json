@@ -9,8 +9,11 @@
         "build": "tsc",
         "watch": "tsc -w"
     },
+    "engines": {
+        "node": "16.x"
+    },
     "keywords": [],
-    "author": "",
+    "author": "Lechixy",
     "license": "ISC",
     "description": "",
     "dependencies": {
