@@ -9,7 +9,7 @@ import { formatTime, timeConverter } from '../../structures/Music/functions/all'
 export default new Command({
     name: 'queue',
     description:'Shows the playing queue of audio player!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {
 

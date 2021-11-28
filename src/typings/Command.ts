@@ -19,7 +19,7 @@ export type CommandType = {
     description?: string;
     name: string;
     arguments?: string;
-    category?: Array<string>;
+    category?: string;
     userPermissions?: PermissionResolvable[];
     clientPermissions?: PermissionResolvable[];
     ownerOnly?: boolean;

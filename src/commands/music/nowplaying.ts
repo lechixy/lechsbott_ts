@@ -3,13 +3,13 @@ import progressbar from 'string-progressbar'
 import Discord from 'discord.js'
 import { roleColor } from '../../util/lechsFunctions';
 import { Command } from "../../structures/Command";
-import { formatTime } from '../../structures/Music/functions/all';
+import { formatTime, timeConverter } from '../../structures/Music/functions/all';
 
 export default new Command({
     name: 'nowplaying',
     aliases: ['np'],
     description:'Get informations of playing song!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {
 
@@ -32,24 +32,6 @@ export default new Command({
             elapsedtime = `${formatTime(moment.duration(songduration).hours())}:${formatTime(moment.duration(songduration).minutes())}:${formatTime(moment.duration(songduration).seconds())}`
         } else {
             elapsedtime = `${moment.duration(songduration).minutes()}:${formatTime(moment.duration(songduration).seconds())}`
-        }
-
-
-        function timeConverter(timestamp) {
-            const split = timestamp.split(':')
-
-            if (split.length > 2) {
-
-                let [hour, minute, second] = split;
-
-                return hour * 3600 + minute * 60 + second * 1
-            } else {
-
-                let [minute, second] = split;
-
-                return (minute * 60 + second * 1)
-
-            }
         }
 
         const bar = progressbar.splitBar(timeConverter(totaltime), timeConverter(elapsedtime), 25, '▬', ':blue_circle:').toString()

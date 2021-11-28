@@ -7,7 +7,7 @@ export default new Command({
     name: 'roles',
     aliases: ['user-roles',],
     description: 'Sends an embed with roles of member!',
-    category: ['User'],
+    category: 'User',
     arguments: `<@User | UserID | none>`,
     async execute({client, message, args, cmd}) {
 

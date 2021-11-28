@@ -12,7 +12,7 @@ export default new Command({
     aliases: ['srch'],
     cooldown: 10,
     description: 'Search somethings on YouTube and get select embed!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({ client, message, args, cmd }) {
 

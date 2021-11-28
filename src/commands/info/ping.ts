@@ -8,7 +8,7 @@ export default new Command({
     description: "Returns with client latency to requests!",
     aliases: ["latency", "ms"],
     cooldown: 2,
-    category: ['Information'],
+    category: 'Information',
     arguments: `<none>`,
     async execute({ client, message, args, cmd }) {
         const log = getVoiceConnection(message.guild.id)

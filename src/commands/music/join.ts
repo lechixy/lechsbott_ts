@@ -3,12 +3,13 @@ import * as Voice from '@discordjs/voice'
 import Discord from 'discord.js'
 import { roleColor } from '../../util/lechsFunctions';
 import { Command } from "../../structures/Command";
+import * as embeds from './embeds/all'
 
 export default new Command({
     name: 'join',
     aliases: ['jointo'],
     description: 'Make lechsbott join to your channel!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<Channel Name | none>`,
     async execute({client, message, args, cmd}) {
 
@@ -31,10 +32,7 @@ export default new Command({
                 if (server_queue) {
 
                     if (voiceChannel.id !== server_queue.voiceChannel.id) {
-                        const embed = new Discord.MessageEmbed()
-                            .setColor(roleColor(message))
-                            .setAuthor(`There is currently playing a song on another voice channel`, message.author.displayAvatarURL({ dynamic: true }))
-                        return message.channel.send({ embeds: [embed] });
+                        return message.channel.send({ embeds: [embeds.sameChannel(message)] });
                     }
                 }
 

@@ -3,10 +3,9 @@ import Discord from 'discord.js'
 
 export default new Command({
     name: 'eval',
-    aliases: ['evaldel'],
     description: '',
     ownerOnly: true,
-    category: ['Owner'],
+    category: 'Owner',
     async execute({ client, message, args, cmd }) {
         if (!args[0]) return
 

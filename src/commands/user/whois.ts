@@ -6,7 +6,7 @@ export default new Command({
     name: "whois",
     aliases: ['who'],
     description: 'Who is this?',
-    category: ['User'],
+    category: 'User',
     arguments: `<@User | UserID | none>`,
     async execute({client, message, args, cmd}) {
 

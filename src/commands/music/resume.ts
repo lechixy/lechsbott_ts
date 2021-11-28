@@ -5,7 +5,7 @@ import { Command } from "../../structures/Command";
 export default new Command({
     name: 'resume',
     description: 'Resumes the audio player',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {
 

@@ -13,7 +13,7 @@ export default new Command({
 	aliases: ['p'],
 	description: 'Play songs in voice channel!',
 	syntax: `${PREFIX}play kiss me more\n${PREFIX}play https://www.youtube.com/watch?v=0EVVKs6DQLo`,
-	category: ['Music'],
+	category: 'Music',
 	arguments: `<youtube search/link/playlist\nspotify link/playlist\n soundcloud link/playlist>`,
 	async execute({ client, message, args, cmd }) {
 		let subscription = client.queue.get(message.guildId);

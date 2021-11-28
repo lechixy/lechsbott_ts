@@ -6,7 +6,7 @@ export default new Command({
     name: 'saidtimes',
     aliases: ['timessaid', 'said', 'saidprefix'],
     description: 'Do you want to see how many times you used lechsbot?',
-    category: ['User'],
+    category: 'User',
     arguments: `<@User | UserID | none>`,
     async execute({client, message, args, cmd}) {
 

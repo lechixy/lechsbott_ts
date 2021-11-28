@@ -6,7 +6,7 @@ export default new Command({
     name: 'fix',
     aliases: ['fixqueue', 'fixplayer'],
     description: 'test cmd',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {
 

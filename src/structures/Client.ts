@@ -11,6 +11,7 @@ import { promisify } from "util";
 import { RegisterCommandsOptions } from "../typings/client";
 import { Event } from "./Event";
 import { lechs_Subscription } from "./Music/Subscription";
+import {subCounter} from "../counters/subcounter"
 import mongoose from 'mongoose'
 import { MONGO_DB_SRV } from '../config.json'
 
@@ -73,12 +74,14 @@ export class ExtendedClient extends Client {
             slashCommands.push(command);
         });
 
-        this.on("ready", () => {
+        this.once("ready", () => {
             this.registerCommands({
                 commands: slashCommands,
                 guildId: process.env.guildId
             });
             let total = 0
+
+            subCounter(this)
 
             this.guilds.cache.each(guild => total += guild.memberCount)
             this.user.setActivity(`${total.toLocaleString()} members!`, { type: 'LISTENING' })

@@ -3,12 +3,13 @@ import { roleColor } from '../../util/lechsFunctions';
 import { Command } from "../../structures/Command";
 import { getVoiceConnection } from '@discordjs/voice';
 import { removeAndClear } from '../../structures/Music/functions/all';
+import * as embeds from './embeds/all'
 
 export default new Command({
     name: 'disconnect',
     aliases: ['dc', 'leave'],
     description: 'Disconnects from voice channel!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({ client, message, args, cmd }) {
 
@@ -51,11 +52,7 @@ export default new Command({
             }
         } else {
             if (voice_channel.id !== server_queue.voiceChannel.id) {
-                const embed = new Discord.MessageEmbed()
-                    .setColor(roleColor(message))
-                    .setTitle(`You need to be in same voice channel with lechsbott`)
-                    .setDescription(`Sorry but you can't use ${cmd}, please make sure you're on the same channel as lechsbott`)
-                return message.channel.send({ embeds: [embed] });
+                return message.channel.send({ embeds: [embeds.sameChannel(message)] });
             }
 
             removeAndClear(message.guild.id, true)

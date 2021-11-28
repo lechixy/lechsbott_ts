@@ -6,7 +6,7 @@ export default new Command({
     name: 'skip',
     description: 'Skips tracks and play next one if available!',
     cooldown: 3,
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {
 

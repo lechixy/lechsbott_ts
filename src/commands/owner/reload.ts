@@ -6,7 +6,7 @@ export default new Command({
     description: "",
     aliases: ['sreload'],
     ownerOnly: true,
-    category: ['Owner'],
+    category: 'Owner',
     async execute({client, message, args, cmd}) {
 
 

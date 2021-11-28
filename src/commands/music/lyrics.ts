@@ -7,7 +7,7 @@ import { Command } from "../../structures/Command";
 export default new Command({
     name: 'lyrics',
     description:'Get the lyrics of playing music!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<Song name | Part from song | none>`,
     async execute({client, message, args, cmd}) {
 

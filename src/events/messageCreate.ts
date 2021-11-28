@@ -32,7 +32,7 @@ export default new Event("messageCreate", (message) => {
     userCheck(message)
 
     const args = message.content.slice(prefix.length).split(/ +/);
-    const cmd = args.shift();
+    const cmd = args.shift().toLocaleLowerCase();
 
     const command = client.commands.get(cmd) ||
         client.commands.find(a => a.aliases && a.aliases.includes(cmd));

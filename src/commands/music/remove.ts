@@ -7,7 +7,7 @@ export default new Command({
     name: 'dequeue',
     aliases: ['rmv', 'remove'],
     description: 'Dequeues the song from the queue!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<queue number for removing song>`,
     async execute({ client, message, args, cmd }) {
 

@@ -6,7 +6,7 @@ export default new Command({
     name: 'playinginfo',
     aliases: ['announcement', 'announcements'],
     description:'Disable or enable playing embed from lechsbott!',
-    category: ['Music'],
+    category: 'Music',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {
 
