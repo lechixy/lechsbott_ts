@@ -97,7 +97,7 @@ start() {
         subCounter(this)
 
         // this.guilds.cache.each(guild => total += guild.memberCount)
-        this.user.setActivity(/*`${total.toLocaleString()} members!`,*/`snowflakes ❄️`, { type: 'WATCHING' })
+        this.user.setActivity(/*`${total.toLocaleString()} members!`,*/`the snowflakes ❄️`, { type: 'WATCHING' })
         console.log("lechsbott is now online!");
     });
 
