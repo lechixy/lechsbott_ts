@@ -1,2 +1,4 @@
 # lechsbott
-a discord bot by me
+can do many things at once...
+
+<3
