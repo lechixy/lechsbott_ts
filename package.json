@@ -18,6 +18,9 @@
     "description": "",
     "dependencies": {
         "@discordjs/voice": "^0.7.2",
+        "@iamtraction/google-translate": "^1.1.2",
+        "axios": "^0.24.0",
+        "chalk": "^4.1.2",
         "discord.js": "^13.3.1",
         "dotenv": "^10.0.0",
         "ffmpeg": "^0.0.4",
