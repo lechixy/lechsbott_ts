@@ -3,18 +3,18 @@ import {
     Client,
     ClientEvents,
     Collection,
-    Intents
 } from "discord.js";
 import { SlashCommandType } from "../typings/SlashCommand";
 import { CommandType } from "../typings/Command";
 import glob from "glob";
 import { promisify } from "util";
-import { RegisterCommandsOptions } from "../typings/client";
 import { Event } from "./Event";
 import { lechs_Subscription } from "./Music/Subscription";
 import { subCounter } from "../counters/subcounter"
 import mongoose from 'mongoose'
-import { MONGO_DB_SRV, LECHSBOTTKEY } from '../config.json'
+import Genius from 'genius-lyrics'
+import { MONGO_DB_SRV, LECHSBOTTKEY, GENIUS } from '../config.json'
+import { clientUtils } from "../typings/clientUtils";
 
 const globPromise = promisify(glob);
 
@@ -22,20 +22,15 @@ export class ExtendedClient extends Client {
     commands: Collection<string, CommandType> = new Collection();
     slashCommands: Collection<string, SlashCommandType> = new Collection();
     queue: Collection<string, lechs_Subscription> = new Collection();
+    utils: clientUtils = {
+        genius: new Genius.Client(GENIUS),
+    }
 
     constructor() {
         console.log(`Starting the main client for process`)
         super({
             shards: 'auto',
-            intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_PRESENCES,
-                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-                Intents.FLAGS.GUILD_BANS
-            ],
+            intents: 2048,
         });
     }
 
@@ -140,7 +135,7 @@ export class ExtendedClient extends Client {
 
             subCounter(this)
 
-            this.user.setActivity(/*`${total.toLocaleString()} members!`,*/`cry baby!`, { type: 'LISTENING' })
+            this.user.setActivity(/*`${total.toLocaleString()} members!`,*/`cry baby!`, { type: 2 })
             this.user.setPresence({ status: "idle"})
             console.log(`${this.user.tag} is now online!`);
         });

@@ -14,11 +14,11 @@ export default new Command({
         const log = getVoiceConnection(message.guild.id)
 
         if (!log) {
-            let pingEmbed = new Discord.MessageEmbed()
-                .setColor(roleColor(message))
-                .setAuthor(client.user.username, client.user.displayAvatarURL({ dynamic: true }))
-                .addField(`Latency/Respond`, `\`${Date.now() - message.createdTimestamp}ms\``)
-                .addField(`Discord API`, `\`${Math.round(client.ws.ping)}ms\``)
+            let pingEmbed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
+                .setAuthor({name: client.user.username, iconURL: client.user.displayAvatarURL()})
+                .addField({name: `Latency/Respond`, value: `\`${Date.now() - message.createdTimestamp}ms\``})
+                .addField({name: `Discord API`, value: `\`${Math.round(client.ws.ping)}ms\``})
             message.channel.send({ embeds: [pingEmbed] });
         } else {
             let ms = log.ping.ws
@@ -29,12 +29,12 @@ export default new Command({
                 resms = log.ping.ws + 'ms'
             }
 
-            let pingEmbed = new Discord.MessageEmbed()
-                .setAuthor(client.user.username, client.user.displayAvatarURL({ dynamic: true }))
-                .addField(`Latency/Respond`, `\`${Date.now() - message.createdTimestamp}ms\``)
-                .setColor(roleColor(message))
-                .addField(`Discord API`, `\`${Math.round(client.ws.ping)}ms\``)
-                .addField(`Voice Connection`, `\`${resms} | ${log.ping.udp}udp\``)
+            let pingEmbed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
+                .setAuthor({name: client.user.username, iconURL: client.user.displayAvatarURL()})
+                .addField({name: `Latency/Respond`, value: `\`${Date.now() - message.createdTimestamp}ms\``})
+                .addField({name: `Discord API`, value: `\`${Math.round(client.ws.ping)}ms\``})
+                .addField({name: `Voice Connection`, value: `\`${resms} | ${log.ping.udp}udp\``})
             message.channel.send({ embeds: [pingEmbed] });
         }
     }

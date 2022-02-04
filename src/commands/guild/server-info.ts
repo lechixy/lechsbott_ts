@@ -83,8 +83,7 @@ export default new Command({
             "THREE_DAY_THREAD_ARCHIVE": "Three days thread archive",
             "SEVEN_DAY_THREAD_ARCHIVE": "Seven days thread archive",
             "PRIVATE_THREADS": "Private threads",
-            "THREADS_ENABLED": "Enabled threads",
-            "NEW_THREAD_PERMISSIONS": "New thread permissions",
+            "ROLE_ICONS": "Role Icons",
         }
 
         let featurearray = [];
@@ -93,37 +92,34 @@ export default new Command({
             featurearray.push(feature[featu])
         })
 
-        const embed = new Discord.MessageEmbed()
-            .setColor(roleColor(message))
-            .setAuthor(guild.name, guild.iconURL({ dynamic: true }))
-            .setDescription(guild.description ? guild.description : `No description`)
-            .setThumbnail(guild.bannerURL({ format: 'png', size: 512 }))
-            .addField(`Owner`, `<@${guild.ownerId}>`, true)
-            .addField(`Total Members`, `${serverSize}`, true)
-            .addField(`Created`, `${checkDays(guild.createdAt)}`, true)
-            // colum
-            .addField(`Roles`, `${Size(guild.roles.cache.size, 'roles')}`, true)
-            .addField(`Emojis`, `${Size(guild.emojis.cache.size, 'emojis')}`, true)
-            .addField(`Stickers`, `${Size(guild.stickers.cache.size, 'stickers')}`, true)
+        const embed = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor(roleColor(message)))
+            .setAuthor({name: guild.name, iconURL: guild.iconURL()})
+            .setDescription(guild.description ? guild.description : `No description for **${guild.name}**`)
+            .setThumbnail(guild.bannerURL({ size: 512 }))
+            .addField({name: `Owner`, value: `<@${guild.ownerId}>`, inline: true})
+            .addField({name: `Total Members`, value: `${serverSize}`, inline: true})
+            .addField({name: `Created`, value: `${checkDays(guild.createdAt)}`, inline: true})
             //colum
-            .addField(`You joined`, `${checkDays(message.member.joinedAt)}`, true)
-            .addField(`Server Boost`, `<a:anim_boost:890625632264917042> ${premiumTier(guild.premiumTier, guild.premiumSubscriptionCount)}`, true)
-            .addField(`Server ID`, `${guild.id}`, true)
+            .addField({name: `Roles`, value: `${Size(guild.roles.cache.size, 'roles')}`, inline: true})
+            .addField({name: `Emojis`, value: `${Size(guild.emojis.cache.size, 'emojis')}`, inline: true})
+            .addField({name: `Stickers`, value: `${Size(guild.stickers.cache.size, 'stickers')}`, inline: true})
             //colum
-            .addField(`Locale`, `${guild.preferredLocale}`, true)
-            .addField(`NSFW Level`, nsfwLevel(guild.nsfwLevel), true)
-            .addField(`Vanity URL Code`, guild.vanityURLCode ? `discord.gg/${guild.vanityURLCode}` : `No vanity url code`, true)
-            // colum
-            .addField(
-                `Channels`,
-                `<:text:891041979528519702> ${Size(message.guild.channels.cache.filter(c => c.type === 'GUILD_TEXT').size, 'texts')}<:transparent:890623794421592104><:voice:891041979612397579> ${Size(message.guild.channels.cache.filter(c => c.type === 'GUILD_VOICE').size, 'voices')}`,
-            )
+            .addField({name: `You joined`, value: `${checkDays(message.member.joinedAt)}`, inline: true})
+            .addField({name: `Server Boost`, value: `<a:anim_boost:890625632264917042> ${premiumTier(guild.premiumTier, guild.premiumSubscriptionCount)}`, inline: true})
+            .addField({name: `Server ID`, value: `${guild.id}`, inline: true})
             //colum
-            .addField(`Members`, `<:status_online:890624318021713980>${onlineCount}<:transparent:890623794421592104><:offline:890624315580637244>${serverSize - onlineCount}<:transparent:890623794421592104>:robot: ${botCount}`)
-            // colum
-            .addField(`Features`, featurearray.join('- '), true)
-            // colum
-            .addField(`Verification Level`, `${verifLevels[guild.verificationLevel]}`)
+            .addField({name: `Locale`, value: `${guild.preferredLocale}`, inline: true})
+            .addField({name: `NSFW Level`, value: `${nsfwLevel(guild.nsfwLevel)}`, inline: true})
+            .addField({name: `Vanity URL Code`, value: `${guild.vanityURLCode ? `discord.gg/${guild.vanityURLCode}` : `No vanity url code`}`, inline: true})
+            //colum
+            .addField({name: `Channels`, value: `<:text:891041979528519702> ${Size(message.guild.channels.cache.filter(c => c.type === 0).size, 'texts')}<:transparent:890623794421592104><:voice:891041979612397579> ${Size(message.guild.channels.cache.filter(c => c.type === 2).size, 'voices')}`, inline: false})
+            //colum
+            .addField({name: `Members`, value: `<:status_online:890624318021713980>${onlineCount}<:transparent:890623794421592104><:offline:890624315580637244>${serverSize - onlineCount}<:transparent:890623794421592104>:robot: ${botCount}`, inline: false})
+            //colum
+            .addField({name: `Features`, value: `${featurearray.join('- ')}`, inline: true})
+            //colum
+            .addField({name: `Verification Level`, value: `${verifLevels[guild.verificationLevel]}`, inline: false})
             .setTimestamp()
         message.channel.send({ embeds: [embed] });
 

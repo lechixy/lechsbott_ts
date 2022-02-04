@@ -22,19 +22,20 @@ export default new Command({
         }
 
         if (!user.presence?.activities) {
-            let tui = new Discord.MessageEmbed()
-                .setAuthor(`${user.user.username} is not online!`, `${user.user.displayAvatarURL()}`)
+            let tui = new Discord.Embed()
+                .setAuthor({name: `${user.user.username} is not online!`, iconURL: `${user.user.displayAvatarURL()}`})
                 .setDescription(`We can't show you an offline member activities`)
+                .setColor(Discord.Util.resolveColor('RED'))
             return message.channel.send({ embeds: [tui] })
         }
 
-        let status: any
+        let status: Discord.Activity
         if (user.presence.activities.find(x => x.id === 'spotify:1' && x.name === 'Spotify')) status = user.presence.activities.find(x => x.id === 'spotify:1' && x.name === 'Spotify')
 
         if (!status) {
-            let tui = new Discord.MessageEmbed()
-                .setColor('#03fc62')
-                .setAuthor(`${user.user.tag}`, `${user.user.displayAvatarURL()}`)
+            let tui = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('RED'))
+                .setAuthor({name: `${user.user.tag}`, iconURL: `${user.user.displayAvatarURL()}`})
                 .setDescription(`Is not listening Spotify!`)
             return message.channel.send({ embeds: [tui] })
         }
@@ -45,14 +46,14 @@ export default new Command({
             artist = status.state,
             timeStart = status.timestamps.start,
             timeEnd = status.timestamps.end,
-            timeduration = (timeEnd - timeStart);
+            timeduration = (parseInt(`${timeStart}`) - parseInt(`${timeEnd}`));
 
         let timeseconds = moment.duration(timeduration).seconds()
         let timeminutes = moment.duration(timeduration).minutes()
 
-        let spotifyInfo = new Discord.MessageEmbed()
-            .setColor('#03fc62')
-            .setAuthor(`${user.user.tag}`, `${user.user.displayAvatarURL()}`)
+        let spotifyInfo = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor('#03fc62'))
+            .setAuthor({name: `${user.user.tag}`, iconURL: `${user.user.displayAvatarURL()}`})
             .setThumbnail(image)
             .addFields(
                 { name: 'Song', value: name, inline: true },
