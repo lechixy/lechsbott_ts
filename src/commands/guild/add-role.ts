@@ -9,8 +9,8 @@ export default new Command({
     description: 'Adds a role to member',
     category: 'Guild',
     arguments: `<@User | UserID> <@Role | RoleID>`,
-    userPermissions: ['MANAGE_ROLES'],
-    clientPermissions: ['MANAGE_ROLES'],
+    userPermissions: ['ManageRoles'],
+    clientPermissions: ['ManageRoles'],
     async execute({ client, message, args, cmd }) {
 
         let user
@@ -21,11 +21,11 @@ export default new Command({
         }
 
         if (!user) {
-            const embed = new Discord.MessageEmbed()
-                .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+            const embed = new Discord.Embed()
+                .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`Wrong arguments are given`)
-                .addField(`Usage`, `${PREFIX}${cmd} **<@User | UserID>** <@Role | RoleID>`, true)
-                .setColor('RED')
+                .addField({name: `Usage`, value: `${PREFIX}${cmd} **<@User | UserID>** <@Role | RoleID>`, inline: true})
+                .setColor(Discord.Util.resolveColor('RED'))
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -33,59 +33,59 @@ export default new Command({
         if (message.mentions.roles.first()) {
             roleto = message.mentions.roles.first()
         } else if (args[0]) {
-            user = await message.guild.roles.cache.get(args[0])
+            roleto = message.guild.roles.cache.get(args[0])
         }
 
         if (!roleto) {
-            const embed = new Discord.MessageEmbed()
-                .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+            const embed = new Discord.Embed()
+                .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`Wrong arguments are given`)
-                .addField(`Usage`, `${PREFIX}${cmd} <@User | UserID> **<@Role | RoleID>**`, true)
-                .setColor('RED')
+                .addField({name: `Usage`, value: `${PREFIX}${cmd} <@User | UserID> **<@Role | RoleID>**`, inline: true})
+                .setColor(Discord.Util.resolveColor('RED'))
             return message.channel.send({ embeds: [embed] });
         }
 
         if (user.roles.cache.some(role => role.name === roleto.name)) {
-            const embed = new Discord.MessageEmbed()
-                .setColor('RED')
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('RED'))
                 .setTitle('This user already has that role')
                 .setDescription(`You cannot add already an existing role`)
             return message.channel.send({ embeds: [embed] });
         }
         if (roleto.managed === true) {
-            const embed = new Discord.MessageEmbed()
+            const embed = new Discord.Embed()
                 .setTitle('We can\'t add this role')
                 .setDescription(`This role is a managed role that means, it cannot be manually assigned to members`)
-                .setColor('RED')
+                .setColor(Discord.Util.resolveColor('RED'))
             return message.channel.send({ embeds: [embed] });
         }
 
         if (message.author.id !== message.guild.ownerId && roleto.position >= message.member.roles.highest.position) {
-            const embed = new Discord.MessageEmbed()
-                .setColor('RED')
-                .setAuthor(`Your role is lower from that member`, message.author.displayAvatarURL({ dynamic: true }))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('RED'))
+                .setAuthor({name: `Your role is lower from that member`, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`You cannot add the ${roleto} role to ${user}`)
             return message.channel.send({ embeds: [embed] });
         }
         if (roleto.position >= message.guild.me.roles.highest.position) {
-            const embed = new Discord.MessageEmbed()
-                .setColor('RED')
-                .setAuthor(`${client.user.username} role is lower than that role`, message.author.displayAvatarURL({ dynamic: true }))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('RED'))
+                .setAuthor({name: `${client.user.username} role is lower than that role`, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`We cannot add the ${roleto} role to ${user}`)
             return message.channel.send({ embeds: [embed] });
         }
 
         try {
             user.roles.add(roleto)
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(message))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
                 .setDescription(`Added the ${roleto} role to ${user}`)
             return message.channel.send({ embeds: [embed] });
         } catch (err) {
 
             console.log(err)
-            const embed = new Discord.MessageEmbed()
-                .setColor('RED')
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('RED'))
                 .setTitle(`There was an error adding the role`)
                 .setDescription(`Sorry we cannot do that, please try later!`)
             return message.channel.send({ embeds: [embed] });
