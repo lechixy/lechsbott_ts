@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { PREFIX, GIPHY_API_KEY } from '../../config.json'
+import { GIPHY_API_KEY } from '../../config.json'
 import { Command } from '../../structures/Command'
 import Discord from 'discord.js'
 import { roleColor } from '../../util/lechsFunctions'
@@ -15,11 +15,11 @@ export default new Command({
 
         const query = args.join(' ')
         if (!query) {
-            const embed = new Discord.MessageEmbed()
-                .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
+            const embed = new Discord.Embed()
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
                 .setDescription(`Wrong arguments are given`)
-                .setColor(roleColor(message))
-                .addField(`Usage`, `${PREFIX}${cmd} **<search query>**`, true)
+                .setColor(Discord.Util.resolveColor('Red'))
+                .addField({name: `Usage`, value: `${cmd} **<search query>**`, inline: true})
             return message.channel.send({ embeds: [embed] });;
         }
 
@@ -32,10 +32,10 @@ export default new Command({
                     return message.reply({ content: `${json.data[0].url}` })
                 }
                 if (json.meta.status === 404) {
-                    const embed = new Discord.MessageEmbed()
-                        .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
-                        .setColor(roleColor(message))
-                        .setDescription(`**Not found any gif \`${query}\` query on Giphy**`)
+                    const embed = new Discord.Embed()
+                        .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                        .setColor(Discord.Util.resolveColor('Red'))
+                        .setDescription(`**Not found any gif with \`${query}\` query on Giphy**`)
                     return message.channel.send({ embeds: [embed] });
                 }
             })

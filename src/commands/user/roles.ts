@@ -11,20 +11,21 @@ export default new Command({
     arguments: `<@User | UserID | none>`,
     async execute({client, message, args, cmd}) {
 
-        let member
+        let member: Discord.GuildMember
         if (message.mentions.members.first()) {
             member = message.mentions.members.first()
         } else if (args[0]) {
-            member = await message.guild.members.cache.get(args[0])
+            member = message.guild.members.cache.get(args[0])
         } else {
             member = message.member
         }
 
         if (!member) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(member))
-                .setAuthor(`Please specify a member to see roles!`, member.user.displayAvatarURL({ dynamic: true }))
-                .addField('Usage', `${PREFIX}${cmd} <tag member/user id>`)
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('Red'))
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                .setDescription(`Please mention a member or give an user id for check roles!`)
+                .addField({name: `Usage`, value: `${cmd} **<@User | Id>**`})
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -38,16 +39,10 @@ export default new Command({
 
         memroles.sort((a, b) => b.position - a.position);
 
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(`${member.user.username}'s Roles`, member.user.displayAvatarURL({ dynamic: true }))
+        const embed = new Discord.Embed()
+            .setAuthor({name: `${member.user.username}'s Roles`, iconURL: member.user.displayAvatarURL()})
             .setDescription(`${memroles.join(' ')}`)
-            .setColor(highestroleColor(member))
+            .setColor(Discord.Util.resolveColor(member.roles.highest.hexColor))
         message.channel.send({ embeds: [embed] });
-
-
     }
 })
-
-function highestroleColor(member) {
-    return member.roles.highest.hexColor
-}

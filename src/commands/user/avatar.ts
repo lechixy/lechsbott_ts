@@ -1,6 +1,5 @@
 import { Command } from '../../structures/Command'
 import Discord from 'discord.js'
-import { PREFIX } from '../../config.json'
 import { roleColor } from '../../util/lechsFunctions'
 
 export default new Command({
@@ -11,7 +10,7 @@ export default new Command({
     arguments: `<@User | UserID | none>`,
     async execute({ client, message, args, cmd }) {
 
-        let user
+        let user: Discord.GuildMember
         if (message.mentions.members.first()) {
             user = message.mentions.members.first()
         } else if (args[0]) {
@@ -21,19 +20,19 @@ export default new Command({
         }
 
         if (!user) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(message))
-                .setTitle(`Oops, we can't found this user in server`)
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('Red'))
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
                 .setDescription(`Please mention a member or give an user id for check avatar!`)
-                .addField(`Usage`, `${PREFIX}${cmd} **<@User | Id>**`)
+                .addField({name: `Usage`, value: `${cmd} **<@User | Id>**`})
             return message.channel.send({ embeds: [embed] });
         }
 
-        let avatar = user.displayAvatarURL({ dynamic: true, size: 1024 })
+        let avatar = user.displayAvatarURL({ size: 1024 })
 
-        let avatarEmbed = new Discord.MessageEmbed()
-            .setColor(roleColor(message))
-            .setAuthor(`${user.user.tag}`, user.displayAvatarURL({ dynamic: true }))
+        let avatarEmbed = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor(roleColor(message)))
+            .setAuthor({name: user.user.tag, iconURL: user.displayAvatarURL()})
             .setImage(avatar)
         message.channel.send({ embeds: [avatarEmbed] })
     }

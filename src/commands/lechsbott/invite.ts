@@ -12,20 +12,19 @@ export default new Command({
 
         let invitelink = `https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`
         
-        const row = new Discord.MessageActionRow()
+        const row = new Discord.ActionRow()
             .addComponents(
-                new Discord.MessageButton()
-                .setStyle("LINK")
+                new Discord.ButtonComponent()
+                .setStyle(Discord.ButtonStyle.Link)
                 .setLabel('Click to invite')
-                .setEmoji("🎁")
                 .setURL(`${invitelink}`)
             )
 
-        const embed = new Discord.MessageEmbed()
-        .setAuthor(`${client.user.username}`, client.user.displayAvatarURL({dynamic: true}))
+        const embed = new Discord.Embed()
+        .setAuthor({name: `${client.user.username}`, iconURL: client.user.displayAvatarURL()})
         .setTitle(`Here is a invite link for you ${message.author.username}`)
         .setURL(invitelink)
-        .setColor(roleColor(message))
+        .setColor(Discord.Util.resolveColor(roleColor(message)))
         .setDescription(`Just click button to add ${client.user.username} your server :blush:`)
         message.channel.send({ embeds: [embed], components: [row] });
         

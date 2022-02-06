@@ -1,5 +1,3 @@
-import { PREFIX, LECHSBOTTKEY } from '../../config.json'
-import fetch from 'node-fetch'
 import { Command } from '../../structures/Command'
 import Discord from 'discord.js'
 import { roleColor } from '../../util/lechsFunctions'
@@ -11,60 +9,51 @@ export default new Command({
     arguments: `<@User | UserID | none>`,
     async execute({ client, message, args, cmd }) {
 
-        let user
+        let user: Discord.GuildMember
         if (message.mentions.members.first()) {
             user = message.mentions.members.first()
         } else if (args[0]) {
-            user = await message.guild.members.cache.get(args[0])
+            user = message.guild.members.cache.get(args[0])
         } else {
             user = message.member
         }
 
         if (!user) {
-            const embed = new Discord.MessageEmbed()
-                .setTitle(`Oops, we can't found this user in server`)
-                .setColor(roleColor(message))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('Red'))
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
                 .setDescription(`Please mention a member or give an user id for check banner!`)
-                .addField(`Usage`, `${PREFIX}${cmd} **<@User | Id>**`)
+                .addField({name: `Usage`, value: `${cmd} **<@User | Id>**`})
             return message.channel.send({ embeds: [embed] });
         }
 
+        const actualUser = user.user
 
-        const res = await fetch(`https://discord.com/api/v9/users/${user.id}`, {
-            headers: {
-                Authorization: `Bot ${LECHSBOTTKEY}`
-            },
-        })
+        if (actualUser.banner) {
 
-        const data: any = await res.json()
-        const { banner, banner_color } = data;
+            const image = actualUser.bannerURL({size: 1024})
 
-        if (banner) {
-            const extension = banner.startsWith('a_') ? ".gif" : ".png"
-            const url = `https://cdn.discordapp.com/banners/${user.id}/${banner}${extension}?size=1024`
-
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(message))
-                .setAuthor(user.user.tag, user.user.displayAvatarURL({ dynamic: true }))
-                .setImage(url)
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
+                .setAuthor({name: actualUser.tag, iconURL: actualUser.displayAvatarURL()})
+                .setImage(image)
             return message.channel.send({ embeds: [embed] });
         } else {
-            if (banner_color) {
+            if (actualUser.accentColor) {
 
-                let url = `https://singlecolorimage.com/get/${banner_color.slice(1, banner_color.length)}/400x100`
+                let url = `https://singlecolorimage.com/get/${actualUser.hexAccentColor.slice(1, actualUser.hexAccentColor.length)}/400x100`
 
-                const embed = new Discord.MessageEmbed()
-                    .setColor(roleColor(message))
-                    .setAuthor(user.user.tag, user.user.displayAvatarURL({ dynamic: true }))
+                const embed = new Discord.Embed()
+                    .setColor(Discord.Util.resolveColor(roleColor(message)))
+                    .setAuthor({name: actualUser.tag, iconURL: actualUser.displayAvatarURL()})
                     .setDescription(`This user is not have a banner but got a banner color`)
                     .setImage(url)
                 return message.channel.send({ embeds: [embed] });
             } else {
-                const embed = new Discord.MessageEmbed()
-                    .setColor(roleColor(message))
-                    .setAuthor(user.user.tag, user.user.displayAvatarURL({ dynamic: true }))
+                const embed = new Discord.Embed()
+                    .setColor(Discord.Util.resolveColor(roleColor(message)))
+                    .setAuthor({name: actualUser.tag, iconURL: actualUser.displayAvatarURL()})
                     .setDescription(`This user is not have a banner and banner color`)
-
                 return message.channel.send({ embeds: [embed] });
             }
         }

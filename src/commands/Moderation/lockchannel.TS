@@ -9,29 +9,40 @@ export default new Command({
     description: 'Locks channel and @everyone can\'t send any messages',
     category: 'Moderation',
     arguments: `<true/on | false/off>`,
-    userPermissions: ['MANAGE_CHANNELS', 'MANAGE_ROLES'],
-    clientPermissions: ['MANAGE_CHANNELS', 'MANAGE_ROLES'],
+    userPermissions: ['ManageChannels'],
+    clientPermissions: ['ManageChannels'],
     async execute({client, message, args, cmd}) {
 
-        if(message.channel.type !== "GUILD_TEXT") return
+        if(message.channel.type !== 0) return
 
         let channel: GuildChannel = message.channel
 
-        let check = channel.permissionsFor(message.guild.roles.everyone).has("SEND_MESSAGES")
+        let check = channel.permissionsFor(message.guild.roles.everyone).has("SendMessages")
 
         if (check === true) {
 
-            channel.permissionOverwrites.edit(message.guild.roles.everyone, { SEND_MESSAGES: false })
+            await channel.permissionOverwrites.edit(message.guild.roles.everyone, { SendMessages: false }).catch(err => catchError(err))
 
-            const embed = new Discord.MessageEmbed()
-                .setDescription(`<#${channel.id}> **channel is locked 🔒**\nMembers can't send any messages to channel until lock turned off`)
+            const embed = new Discord.Embed()
+                .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
+                .setTitle(`${channel.name} is locked!`)
+                .setDescription(`Members can't send any messages to channel until lock turned off`)
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [embed] });
         } else {
-            channel.permissionOverwrites.edit(message.guild.roles.everyone, { SEND_MESSAGES: true })
+            await channel.permissionOverwrites.edit(message.guild.roles.everyone, { SendMessages: true }).catch(err => catchError(err))
 
-            const embed = new Discord.MessageEmbed()
-                .setDescription(`<#${channel.id}> **channel now unlocked 🔓**\nMembers can send any messages to channel`)
+            const embed = new Discord.Embed()
+                .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
+                .setTitle(`${channel.name} is unlocked!`)
+                .setDescription(`Members can send any messages to channel`)
+                .setColor(Discord.Util.resolveColor('Green'))
             return message.channel.send({ embeds: [embed] });
         }
     }
 })
+
+function catchError(error) {
+    console.log('LOCK CHANNEL | ', error)
+    return
+}

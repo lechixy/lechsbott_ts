@@ -1,5 +1,6 @@
 import { roleColor, converToCode } from "../../util/lechsFunctions";
 import Discord from 'discord.js'
+import {APIEmbedField} from 'discord-api-types';
 import { PREFIX } from '../../config.json'
 import { Command } from "../../structures/Command";
 
@@ -37,7 +38,7 @@ export default new Command({
                 }
             })
 
-            let fields = []
+            let fields: APIEmbedField[] = []
 
             allcmds.forEach(category => {
                 let data = {
@@ -60,46 +61,43 @@ export default new Command({
                 return 0;
             })
 
-            const embed = new Discord.MessageEmbed()
-                .setAuthor(`Command List`, message.author.displayAvatarURL({ dynamic: true }))
+            const embed = new Discord.Embed()
+                .setAuthor({name: `Command List`, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`A list of commands for help about complicated commands!\nNeed more information about command? Use \`${PREFIX}${cmd} <command>\``)
-                .addFields(fields)
+                .addFields(...fields)
                 .setTimestamp()
-                .setColor(roleColor(message))
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
             return message.channel.send({ embeds: [embed] });
         } else {
 
             const cmd = client.commands.get(`${args[0].toLowerCase()}`) || client.commands.find(a => a.aliases && a.aliases.includes(args[0]));
 
             if (!cmd) {
-                const embed = new Discord.MessageEmbed()
+                const embed = new Discord.Embed()
                     .setTitle(`${args[0]} is not found`)
                     .setDescription(`You can try find with name of the command or a valid aliase for command!`)
-                    .addField(`Usage`, `${PREFIX}help <command | aliase>`, true)
-                    .setColor(roleColor(message))
+                    .addField({name: `Usage`, value: `${PREFIX}help <command | aliase>`, inline: true})
+                    .setColor(Discord.Util.resolveColor(roleColor(message)))
                 return message.channel.send({ embeds: [embed] });
             } else {
-                const embed = new Discord.MessageEmbed()
-                    .setAuthor(`Command Information`, message.author.displayAvatarURL({ dynamic: true }))
+                const embed = new Discord.Embed()
+                    .setAuthor({name: `Command Information`, iconURL: message.author.displayAvatarURL()})
                     .setTitle(`${cmd.name}`)
-                    .setColor(roleColor(message))
+                    .setColor(Discord.Util.resolveColor(roleColor(message)))
                     .setDescription(`${cmd.description || 'No description is available for command'}`)
                     .setTimestamp()
 
                 if (cmd.aliases) {
-                    embed.addField(`Aliases`, `${converToCode(cmd.aliases.join(', '))}`)
+                    embed.addField({name: `Aliases`, value: `${converToCode(cmd.aliases.join(', '))}`})
                 }
 
                 if (cmd.arguments) {
-                    embed.addField(`Arguments`, `${converToCode(cmd.arguments)}`)
+                    embed.addField({name: `Arguments`, value: `${converToCode(cmd.arguments)}`})
                 }
 
                 if(cmd.syntax){
-                    embed.addField(`Usage`, `${converToCode(cmd.syntax)}`)
+                    embed.addField({name: `Usage`, value: `${converToCode(cmd.syntax)}`})
                 }
-
-
-
                 return message.channel.send({ embeds: [embed] });
             }
 

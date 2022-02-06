@@ -20,16 +20,12 @@ export default new Command({
             }
 
         } catch (err) {
-            let errorembed = new Discord.MessageEmbed()
-                .setAuthor(`An error occured`)
-                .addField(`Entrys`, `\`\`\`js\n${args.join(" ")}\n\`\`\``)
-                .addField(`Output`, `\`\`\`js\n${err}\n\`\`\``)
-                .setColor('RED')
-                .setTimestamp()
-            message.channel.send({ embeds: [errorembed] })
-            message.react('‼')
+            let errorembed = new Discord.Embed()
+                .setAuthor({name: `An error occured`})
+                .addField({name: `Entrys`, value: `\`\`\`js\n${args.join(" ")}\n\`\`\``})
+                .addField({name: `Output`, value: `\`\`\`js\n${err}\n\`\`\``})
+                .setColor(Discord.Util.resolveColor('Red'))
+            message.channel.send({ embeds: [errorembed] }).then(m => m.react('‼'))
         }
-
-
     }
 })

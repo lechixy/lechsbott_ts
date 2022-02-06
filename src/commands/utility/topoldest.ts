@@ -1,7 +1,6 @@
 import moment from 'moment'
 import Discord from 'discord.js'
 import { roleColor } from "../../util/lechsFunctions";
-import { PREFIX } from '../../config.json'
 import { Command } from '../../structures/Command';
 
 export default new Command({
@@ -21,12 +20,12 @@ export default new Command({
             return anumber-bnumber
         }).first(10)
 
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(`Oldest 10 members in ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
-            .setColor(roleColor(message))
+        const embed = new Discord.Embed()
+            .setAuthor({name: `Oldest 10 members in ${message.guild.name}`, iconURL: message.guild.iconURL()})
+            .setColor(Discord.Util.resolveColor(roleColor(message)))
 
         mem.map((value, index) => {
-            embed.addField(`${index + 1} | ${value.user.tag}`, `${moment(value.user.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')} (${moment(value.user.createdAt).fromNow()})`)
+            embed.addField({name: `${index + 1} | ${value.user.tag}`, value: `${moment(value.user.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')} (${moment(value.user.createdAt).fromNow()})`})
         })
 
         message.channel.send({ embeds: [embed] })

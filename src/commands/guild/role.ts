@@ -27,7 +27,7 @@ export default new Command({
                 .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`Wrong arguments are given`)
                 .addField({name: `Usage`, value: `${PREFIX}${cmd} **<@Role | RoleID>**`, inline: true})
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [embed] });
         }
 

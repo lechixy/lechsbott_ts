@@ -9,11 +9,9 @@ export default new Command({
     description: 'Pulls member from other channel to your channel',
     category: 'Moderation',
     arguments: `<@User | UserID>`,
-    userPermissions: ['MOVE_MEMBERS'],
-    clientPermissions: ['MOVE_MEMBERS'],
+    userPermissions: ['MoveMembers'],
+    clientPermissions: ['MoveMembers'],
     async execute({ client, message, args, cmd }) {
-        const user = message.member;
-
         let member: GuildMember
         if (message.mentions.members.first()) {
             member = message.mentions.members.first()
@@ -21,27 +19,26 @@ export default new Command({
             member = message.guild.members.cache.get(args[0])
         }
 
-
         if (!message.member.voice.channel) {
-            const memberembed = new Discord.MessageEmbed()
-                .setColor(roleColor(message))
-                .setAuthor(`You need to be in a voice channel!`, user.displayAvatarURL({ dynamic: true }))
-                .setDescription(`Cause how can we pull the member an unknown channel?`)
+            const memberembed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor("Red"))
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                .setDescription(`You need to be in a voice channel for pull!`)
             return message.channel.send({ embeds: [memberembed] })
         }
         if (!member) {
-            const memberembed = new Discord.MessageEmbed()
-                .setAuthor(`Please mention a member to pull!`, user.displayAvatarURL({ dynamic: true }))
-                .addField(`Usage`, `${PREFIX}${cmd} **<@User | Id>**`)
-                .setColor(roleColor(message))
-                .setDescription(`We need an user to pull member to your channel`)
+            const memberembed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('Red'))
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                .setDescription(`Wrong arguments are given, mention a member to pull!`)
+                .addField({ name: `Usage`, value: `${PREFIX}${cmd} **<@User | Id>**` })
             return message.channel.send({ embeds: [memberembed] })
         }
         if (!member.voice.channel) {
-            const memberembed = new Discord.MessageEmbed()
-                .setAuthor(`This user is not in a voice channel!`, member.displayAvatarURL({ dynamic: true }))
-                .setDescription(`You cannot pull a member is not in a voice channel!`)
-                .setColor(roleColor(message))
+            const memberembed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor('Red'))
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                .setDescription(`${member} is not in a voice channel!`)
             return message.channel.send({ embeds: [memberembed] })
         }
 
@@ -49,16 +46,18 @@ export default new Command({
         try {
             member.voice.setChannel(message.member.voice.channel)
 
-            let successembed = new Discord.MessageEmbed()
+            let successembed = new Discord.Embed()
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
                 .setDescription(`<@${member.id}> **is pulled to** <#${message.member.voice.channel.id}>`)
-                .setColor(roleColor(message))
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
             return message.channel.send({ embeds: [successembed] })
 
         } catch (err) {
             console.log(err);
-            let embed = new Discord.MessageEmbed()
-                .setDescription(`**There is an error while pulling member**`)
-                .setColor(roleColor(message))
+            let embed = new Discord.Embed()
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                .setDescription(`**There is an error while pulling member, please try later!**`)
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [embed] })
         }
     }

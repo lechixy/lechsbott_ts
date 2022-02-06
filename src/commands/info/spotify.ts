@@ -25,7 +25,7 @@ export default new Command({
             let tui = new Discord.Embed()
                 .setAuthor({name: `${user.user.username} is not online!`, iconURL: `${user.user.displayAvatarURL()}`})
                 .setDescription(`We can't show you an offline member activities`)
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [tui] })
         }
 
@@ -34,7 +34,7 @@ export default new Command({
 
         if (!status) {
             let tui = new Discord.Embed()
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
                 .setAuthor({name: `${user.user.tag}`, iconURL: `${user.user.displayAvatarURL()}`})
                 .setDescription(`Is not listening Spotify!`)
             return message.channel.send({ embeds: [tui] })

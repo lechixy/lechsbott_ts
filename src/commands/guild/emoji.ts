@@ -13,7 +13,7 @@ export default new Command({
         
         if(!args.length){
             const argsembed = new Discord.Embed()
-            .setColor(Discord.Util.resolveColor('RED'))
+            .setColor(Discord.Util.resolveColor('Red'))
             .setAuthor({name: `Please specify a emoji you want to zoom in!`, iconURL: message.author.displayAvatarURL()})
             return message.channel.send({ embeds: [argsembed] })
         }
@@ -37,7 +37,7 @@ export default new Command({
 
             const embed = new Discord.Embed()
             .setAuthor({name: `Emoji type is invalid!`, iconURL: message.author.displayAvatarURL()})
-            .setColor(Discord.Util.resolveColor('RED'))
+            .setColor(Discord.Util.resolveColor('Red'))
             .setDescription(`Probably **${args[0]}** is not an emoji, please specify an emoji!`)
             message.channel.send({ embeds: [embed] });
         }

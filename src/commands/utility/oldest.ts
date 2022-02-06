@@ -20,15 +20,15 @@ export default new Command({
             return anumber-bnumber
         }).first()
 
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(`Oldest member in ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+        const embed = new Discord.Embed()
+            .setAuthor({name: `Oldest member in ${message.guild.name}`, iconURL: message.guild.iconURL()})
             .setTitle(mem.user.tag)
-            .setColor(roleColor(message))
-            .setThumbnail(mem.user.displayAvatarURL({dynamic: true}))
+            .setThumbnail(mem.user.displayAvatarURL())
+            .setColor(Discord.Util.resolveColor(roleColor(message)))
             .setDescription(`${mem}`)
-            .addField(`ID`, `${mem.id}`)
-            .addField(`Created At`, `${moment(mem.user.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}`)
-            .addField(`From now`, `${moment(mem.user.createdAt).fromNow()}`)
+            .addField({name: `ID`, value: `${mem.id}`})
+            .addField({name: `Created At`, value: `${moment(mem.user.createdAt).format('dddd, MMMM Do YYYY, h:mm:ss a')}`})
+            .addField({name: `From now`, value: `${moment(mem.user.createdAt).fromNow()}`})
         message.channel.send({ embeds: [embed] })
     }
 })

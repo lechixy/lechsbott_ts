@@ -8,42 +8,42 @@ export default new Command({
     description: "Sets custom prefix for this guild!",
     category: "lechsbott",
     cooldown: 5,
-    userPermissions: ["ADMINISTRATOR"],
+    userPermissions: ["ManageGuild"],
     async execute({client, message, args, cmd}){
         
         if(!args[0]){
-            const embed = new Discord.MessageEmbed()
-            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL({dynamic: true})})
+            const embed = new Discord.Embed()
+            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
             .setDescription('Wrong arguments are given')
-            .setColor('RED')
-            .addField(`Usage`, `${cmd} **<new prefix: required>**`, true)
+            .setColor(Discord.Util.resolveColor('Red'))
+            .addField({name: `Usage`, value: `${cmd} **<new prefix: requiRed>**`, inline: true})
             return message.channel.send({embeds: [embed]})
         }
 
         let newprefix: string | number = parseInt(args[0])
 
         if(isNaN(newprefix)){
-            const embed = new Discord.MessageEmbed()
-            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL({dynamic: true})})
+            const embed = new Discord.Embed()
+            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
             .setDescription('New prefix needs to be a text not a number!')
-            .setColor('RED')
-            .addField(`Usage`, `${cmd} **<new prefix: required>**`, true)
+            .setColor(Discord.Util.resolveColor('Red'))
+            .addField({name: `Usage`, value: `${cmd} **<new prefix: requiRed>**`, inline: true})
             return message.channel.send({embeds: [embed]})
         }
 
         newprefix = newprefix.toString()
 
         await db.findOneAndUpdate({guildId: message.guildId}, { $set: { prefix: newprefix } }).then(() => {
-            const embed = new Discord.MessageEmbed()
-            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL({dynamic: true})})
+            const embed = new Discord.Embed()
+            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
             .setDescription(`Prefix updated to **${newprefix}** for **${message.guild.name}**`)
-            .setColor('GREEN')
+            .setColor(Discord.Util.resolveColor('Green'))
             return message.channel.send({embeds: [embed]})
         }).catch(err => {
-            const embed = new Discord.MessageEmbed()
-            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL({dynamic: true})})
+            const embed = new Discord.Embed()
+            .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
             .setDescription('There is an error while updating the prefix, please try later!')
-            .setColor('RED')
+            .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({embeds: [embed]})
         })
 

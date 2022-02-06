@@ -1,4 +1,3 @@
-import { PREFIX } from '../../config.json'
 import Discord from 'discord.js'
 import { Command } from '../../structures/Command';
 import axios from 'axios'
@@ -10,14 +9,14 @@ export default new Command({
     description: 'Online dictionary for search words in Urban!',
     category: 'Utility',
     arguments: `<word | query>`,
-    async execute({client, message, args, cmd}) {
+    async execute({ client, message, args, cmd }) {
         let query = args.join(' ');
         if (!query) {
-            const embed = new Discord.MessageEmbed()
-                .setAuthor(message.author.tag, message.author.displayAvatarURL({ dynamic: true }))
-                .setDescription(`Wrong arguments are given`)
-                .setColor(roleColor(message))
-                .addField(`Usage`, `${PREFIX}${cmd} **<word | query>**`, true)
+            const embed = new Discord.Embed()
+                .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                .setDescription(`Wrong arguments are given, need a query to Urban it!`)
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
+                .addField({name: `Usage`, value: `${cmd} **<word | query>**`, inline: true})
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -31,14 +30,14 @@ export default new Command({
 
         const [answer] = list;
 
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(message.author.tag, message.author.displayAvatarURL({dynamic: true}))
+        const embed = new Discord.Embed()
+            .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
             .setTitle(answer.word)
             .setURL(answer.permalink)
-            .setColor(roleColor(message))
-            .addField(`Definition`, trim(answer.definition))
-            .addField(`Example`, trim(answer.example))
-            .setFooter(`👍 ${answer.thumbs_up}  |  ${answer.thumbs_down} 👎`)
+            .setColor(Discord.Util.resolveColor(roleColor(message)))
+            .addField({name: `Definition`, value: trim(answer.definition)})
+            .addField({name: `Example`, value: trim(answer.example)})
+            .setFooter({text: `👍 ${answer.thumbs_up}  |  ${answer.thumbs_down} 👎`})
         message.channel.send({ embeds: [embed] });
     }
 })

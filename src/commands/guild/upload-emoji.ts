@@ -17,7 +17,7 @@ export default new Command({
         if(!args.length){
             const argsembed = new Discord.Embed()
             .setAuthor({name: `Please specify some emojis!`, iconURL: user.displayAvatarURL()})
-            .setColor(Discord.Util.resolveColor('RED'))
+            .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [argsembed] })
         }
 

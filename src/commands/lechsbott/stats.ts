@@ -30,14 +30,14 @@ export default new Command({
         let third = `\n<Guilds: ${client.guilds.cache.size}>\n<Channels: ${client.channels.cache.size}>\n<Users: ${totalmembers}>`
         let fourth = `\n<Ping: ${Date.now() - message.createdTimestamp}ms>\n<LastUpdated: ${readyOn}>\n<Uptime: ${client.uptime}>`
 
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(`Global Stats`, message.author.displayAvatarURL({ dynamic: true }))
+        const embed = new Discord.Embed()
+            .setAuthor({name: `Global Stats`, iconURL: message.author.displayAvatarURL()})
             .setDescription(`How many numbers are there? Need to help about bot use \`${PREFIX}help\``)
-            .addField(`This Guild`, `${converToCode(first, 'md')}`)
-            .addField(`Global information`, `${converToCode(second, 'md')}`)
-            .addField(`Bot information`, `${converToCode(third, 'md')}${converToCode(fourth, 'md')}`)
+            .addField({name: `This Guild`, value: `${converToCode(first, 'md')}`})
+            .addField({name: `Global information`, value: `${converToCode(second, 'md')}`})
+            .addField({name: `Bot information`, value: `${converToCode(third, 'md')}${converToCode(fourth, 'md')}`})
             .setTimestamp()
-            .setColor(roleColor(message))
+            .setColor(Discord.Util.resolveColor(roleColor(message)))
         message.channel.send({ embeds: [embed] });
 
     }

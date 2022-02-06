@@ -9,16 +9,16 @@ export default new Command({
     description: "Search members with many in guild",
     category: 'Moderation',
     arguments: `<username | tag | id | nickname>`,
-    userPermissions: ['MANAGE_MESSAGES'],
-    clientPermissions: ['MANAGE_MESSAGES'],
+    userPermissions: ['ManageMessages'],
+    clientPermissions: ['ManageMessages'],
     async execute({ client, message, args, cmd }) {
 
         const user = args.join(" ")
         if (!user) {
-            const embed = new Discord.MessageEmbed()
-                .setAuthor(`Need an query to find users in this server!`, message.author.displayAvatarURL({ dynamic: true }))
-                .addField(`Usage`, `${PREFIX}${cmd}`)
-                .setColor(roleColor(message))
+            const embed = new Discord.Embed()
+                .setAuthor({name: `Need an query to find users in this server!`, iconURL: message.author.displayAvatarURL()})
+                .addField({name: `Usage`, value: `${PREFIX}${cmd}`})
+                .setColor(Discord.Util.resolveColor(roleColor(message)))
             return message.channel.send({ embeds: [embed] })
         }
 
@@ -43,12 +43,13 @@ export default new Command({
             }
         });
 
+        const text = `${array.length === 0 ? 'No results found' : array.length === 1 ? '1 result found': `${array.length} results found`}`
 
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(`Searching for ${user} in ${message.guild.name}`)
+        const embed = new Discord.Embed()
+            .setAuthor({name: `Search results for ${user} in ${message.guild.name}`})
             .setDescription(array.join("\n") || "No Results Found")
-            .setFooter(`${array.length} result(s)`)
-            .setColor(roleColor(message))
+            .setFooter({text})
+            .setColor(Discord.Util.resolveColor(roleColor(message)))
         message.channel.send({ embeds: [embed] })
     },
 })

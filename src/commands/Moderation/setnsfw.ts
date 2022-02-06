@@ -9,24 +9,32 @@ export default new Command({
     description: 'Set nsfw mode for a text channel',
     category: 'Moderation',
     arguments: `<true/on | false/off>`,
-    userPermissions: ['MANAGE_CHANNELS'],
-    clientPermissions: ['MANAGE_CHANNELS'],
+    userPermissions: ['ManageChannels'],
+    clientPermissions: ['ManageChannels'],
     async execute({client, message, args, cmd}) {
 
         const channel = message.channel
 
-        if(channel.type !== "GUILD_TEXT") return
+        if(channel.type !== 0) return
 
         if (channel.nsfw === true) {
             channel.setNSFW(false)
-            let settedembed = new Discord.MessageEmbed()
-                .setDescription(`**NSFW mode is enabled for** <#${channel.id}>\nThis channel may not safe for work for some members!`)
-            return message.channel.send({ embeds: [settedembed] })
+
+            const embed = new Discord.Embed()
+                .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
+                .setTitle(`NSFW mode is enabled for ${channel.name}`)
+                .setDescription(`Channel may not safe for work for some members!`)
+                .setColor(Discord.Util.resolveColor('Green'))
+            return message.channel.send({ embeds: [embed] });
+
         } else {
             channel.setNSFW(true)
-            let settedembed = new Discord.MessageEmbed()
-                .setDescription(`**NSFW mode is now disabled for** <#${channel.id}>`)
-            return message.channel.send({ embeds: [settedembed] })
+            
+            const embed = new Discord.Embed()
+                .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
+                .setTitle(`NSFW mode is disabled for ${channel.name}`)
+                .setColor(Discord.Util.resolveColor('Red'))
+            return message.channel.send({ embeds: [embed] });
         }
     }
 })

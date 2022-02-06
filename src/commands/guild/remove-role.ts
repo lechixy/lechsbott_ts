@@ -26,7 +26,7 @@ export default new Command({
                 .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`Wrong arguments are given`)
                 .addField({name: `Usage`, value: `${PREFIX}${cmd} **<@User | UserID>** <@Role | RoleID>`, inline: true})
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -42,7 +42,7 @@ export default new Command({
                 .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`Wrong arguments are given`)
                 .addField({name: `Usage`, value: `${PREFIX}${cmd} <@User | UserID> **<@Role | RoleID>**`, inline: true})
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -51,27 +51,27 @@ export default new Command({
                 .setAuthor({name: message.author.tag, iconURL: message.author.displayAvatarURL()})
                 .setTitle('This user has not that role')
                 .setDescription(`You cannot remove a role that does not exist`)
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [embed] });
         }
         if (roleto.managed === true) {
             const embed = new Discord.Embed()
                 .setTitle('Can\'t remove this role')
                 .setDescription(`This role is a managed role that means, it cannot be manually removed from members`)
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
             return message.channel.send({ embeds: [embed] });
         }
 
         if (message.author.id !== message.guild.ownerId && roleto.position >= message.member.roles.highest.position) {
             const embed = new Discord.Embed()
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
                 .setAuthor({name: `Your role is lower from that member`, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`You cannot remove the ${roleto} role to ${user}`)
             return message.channel.send({ embeds: [embed] });
         }
         if (roleto.position >= message.guild.me.roles.highest.position) {
             const embed = new Discord.Embed()
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
                 .setAuthor({name: `${client.user.username} role is lower than that role`, iconURL: message.author.displayAvatarURL()})
                 .setDescription(`We cannot remove the ${roleto} role to ${user}`)
             return message.channel.send({ embeds: [embed] });
@@ -87,7 +87,7 @@ export default new Command({
 
             console.log(err)
             const embed = new Discord.Embed()
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
                 .setTitle(`There was an error removing the role`)
                 .setDescription(`Sorry we cannot do that, please try later!`)
             return message.channel.send({ embeds: [embed] });

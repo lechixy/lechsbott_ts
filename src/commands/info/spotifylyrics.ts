@@ -22,7 +22,7 @@ export default new Command({
 
         if (!user.presence?.activities) {
             let tui = new Discord.Embed()
-                .setColor(Discord.Util.resolveColor('RED'))
+                .setColor(Discord.Util.resolveColor('Red'))
                 .setAuthor({ name: `${user.user.username} is not online!`, iconURL: `${user.user.displayAvatarURL()}` })
                 .setDescription(`We can't show you an offline member activities`)
             return message.channel.send({ embeds: [tui] })
