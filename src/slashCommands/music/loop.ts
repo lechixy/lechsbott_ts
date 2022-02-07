@@ -31,16 +31,16 @@ export default new SlashCommand({
         if(queue.mode === "default"){
             queue.mode = status.default
 
-            let embed = new Discord.MessageEmbed()
-            .setColor(roleColor(interaction))
+            let embed = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor(roleColor(interaction)))
             .setTitle(`Looping the queue`)
             .setDescription(`Playback mode is now **looping track** and the first track will looping`)
             return interaction.followUp({embeds: [embed]})
         } else if(queue.mode === "looptrack"){
             queue.mode = status.looptrack
 
-            let embed = new Discord.MessageEmbed()
-            .setColor(roleColor(interaction))
+            let embed = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor(roleColor(interaction)))
             .setTitle(`Default playing`)
             .setDescription(`Playback mode is now **default playing** and the tracks are will playing with queue`)
             return interaction.followUp({embeds: [embed]})

@@ -6,7 +6,7 @@ import * as embeds from './embeds/all'
 export default new SlashCommand({
     name: 'resume',
     description: 'Resumes the player and song plays!',
-    async execute({client, interaction, args}) {
+    async execute({ client, interaction, args }) {
 
         const queue = client.queue
         const server_queue = queue.get(interaction.guild.id)
@@ -27,25 +27,25 @@ export default new SlashCommand({
         const lechplayer = server_queue.audioPlayer
 
         try {
-            if(lechplayer.state.status === 'paused'){
+            if (lechplayer.state.status === 'paused') {
                 lechplayer.unpause()
-    
-                const embed = new Discord.MessageEmbed()
-                .setDescription(`**▶️ Resuming**`)
-                .setColor(roleColor(interaction))
+
+                const embed = new Discord.Embed()
+                    .setDescription(`**▶️ Resuming**`)
+                    .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 return interaction.followUp({ embeds: [embed] });
-            } else if(lechplayer.state.status === 'playing') {
-                const embed = new Discord.MessageEmbed()
-                .setDescription(`**▶️ Already playing**`)
-                .setColor(roleColor(interaction))
+            } else if (lechplayer.state.status === 'playing') {
+                const embed = new Discord.Embed()
+                    .setDescription(`**▶️ Already playing**`)
+                    .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 return interaction.followUp({ embeds: [embed] });
             }
         } catch (err) {
             console.log(err)
 
-            const embed = new Discord.MessageEmbed()
-            .setDescription(`There is an error trying to resume player, try later!`)
-            .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                .setDescription(`There is an error trying to resume player, try later!`)
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
             return interaction.followUp({ embeds: [embed] });
         }
 

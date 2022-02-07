@@ -25,8 +25,8 @@ export default new SlashCommand({
         }
 
         if (!server_queue.songs[1]) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                 .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(`**There is no song to skip after this song in the queue**`)
             return interaction.followUp({ embeds: [embed] });
         }
@@ -34,14 +34,14 @@ export default new SlashCommand({
         try {
             server_queue.audioPlayer.stop(true);
 
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                 .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(`**Skipped to** \`${server_queue.songs[0].title}\``)
             return interaction.followUp({ embeds: [embed] });
         } catch (err) {
             console.log(err)
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                 .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(`**There was an error on skipping try later!**`)
             return interaction.followUp({ embeds: [embed] });
         }

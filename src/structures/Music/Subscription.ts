@@ -10,6 +10,7 @@ import { ExtendedInteraction } from '../../typings/SlashCommand';
 import { roleColor } from '../../util/lechsFunctions';
 import { defineAuthor, removeAndClear, findTypeAndSend, clearAndStopPlayer } from './functions/all';
 import { Track } from './Track';
+import { client } from '../../';
 
 export class lechs_Subscription {
 
@@ -74,13 +75,13 @@ export class lechs_Subscription {
 			}
 		})
 
-		if (this.voiceChannel.type === 'GUILD_STAGE_VOICE') {
+		if (this.voiceChannel.type === Discord.ChannelType.GuildStageVoice) {
 			interaction.guild.me.voice.setSuppressed(false).catch(err => {
 
-				const embed = new Discord.MessageEmbed()
-					.setAuthor(interaction.member.user.tag, interaction.member.displayAvatarURL({ dynamic: true }))
+				const embed = new Discord.Embed()
+					.setAuthor({name: interaction.member.user.tag, iconURL: interaction.member.displayAvatarURL()})
 					.setDescription(`lechsbott is currently an audience member, make it speaker to listen the music`)
-					.setColor('RED')
+					.setColor(Discord.Util.resolveColor('Red'))
 				return interaction.channel.send({ embeds: [embed] })
 			})
 		}
@@ -88,7 +89,7 @@ export class lechs_Subscription {
 		const checkmembers = setInterval(() => {
 
 			console.log('checking the members')
-			if(this?.voiceChannel.members.size === 1){
+			if (this?.voiceChannel.members.size === 1 && this?.voiceChannel.members.first().id === client.user.id) {
 				clearAndStopPlayer(this?.guildId)
 
 				return removeAndClear(this.guildId, true)
@@ -96,7 +97,7 @@ export class lechs_Subscription {
 				return
 			}
 
-		}, 1000*60*2)
+		}, 1000 * 60 * 2)
 		this.checkInterval = checkmembers
 
 		voiceConnection.subscribe(this.audioPlayer);
@@ -115,13 +116,13 @@ export class lechs_Subscription {
 
 		if (this.songs[1] && track) {
 			let memberavatar = defineAuthor(this.lastRespond, 'displayAvatarURL')
-			let queueInfo = new Discord.MessageEmbed()
-				.setColor(roleColor(this.lastRespond))
-				.setAuthor(`Added to queue`, `${memberavatar}`)
+			let queueInfo = new Discord.Embed()
+				.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
+				.setAuthor({ name: `Added to queue`, iconURL: `${memberavatar}` })
 				.setTitle(`${track.title}`)
 				.setURL(`${track.customurl}`)
 				.setTimestamp()
-				.setFooter(`${track.addedby.user.username}`);
+				.setFooter({ text: `${track.addedby.user.username}` });
 
 			return this.lastRespond.followUp({ embeds: [queueInfo] }, this.lastRespond).then((message) => {
 				message.react('👍');
@@ -149,12 +150,12 @@ export class lechs_Subscription {
 			}
 
 			if (this.playingInfo === true && this.mode === "default") {
-				let playing = new Discord.MessageEmbed()
-					.setColor(roleColor(this.lastRespond))
-					.setAuthor(`Now playing`, `${defineAuthor(this.lastRespond, 'displayAvatarURL')}`)
+				let playing = new Discord.Embed()
+					.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
+					.setAuthor({name: `Now playing`, iconURL: `${defineAuthor(this.lastRespond, 'displayAvatarURL')}`})
 					.setTitle(`${nextTrack.title}`)
 					.setURL(`${nextTrack.customurl}`)
-					.setFooter(`${nextTrack.addedby.user.username}`)
+					.setFooter({text: `${nextTrack.addedby.user.username}`})
 					.setTimestamp();
 
 				this.textChannel.send({ embeds: [playing] })

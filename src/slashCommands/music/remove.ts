@@ -10,7 +10,7 @@ export default new SlashCommand({
         {
             name: "number",
             description: "Type a queue number for remove that song!",
-            type: "INTEGER",
+            type: Discord.ApplicationCommandOptionType.Integer,
             required: true,
         }
     ],
@@ -22,30 +22,30 @@ export default new SlashCommand({
         if (!server_queue) {
             return interaction.followUp({ embeds: [embeds.noQueue(interaction)] });
         }
-        
+
 
         let number = args.getNumber('number')
 
         if (number <= 0) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setTitle(`The "${args[0]}"" is need to be positive`)
                 .setDescription(`Please type a number is positive!`)
             return interaction.followUp({ embeds: [embed] });
         }
 
         if (!server_queue.songs[number - 1]) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setTitle(`The queue only have ${server_queue.songs.length} songs!`)
                 .setDescription(`Please type a number is in the queue!`)
             return interaction.followUp({ embeds: [embed] });
         }
 
-        const embed = new Discord.MessageEmbed()
-            .setColor(roleColor(interaction))
+        const embed = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor(roleColor(interaction)))
             .setDescription(`\`${server_queue.songs[number - 1]}\` dequeued from queue!`)
-            interaction.followUp({ embeds: [embed] })
+        interaction.followUp({ embeds: [embed] })
 
         return delete server_queue.songs[number - 1]
 

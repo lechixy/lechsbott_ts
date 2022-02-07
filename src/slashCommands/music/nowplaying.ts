@@ -8,8 +8,8 @@ import * as embeds from './embeds/all'
 
 export default new SlashCommand({
     name: 'nowplaying',
-    description:'Get informations of playing song!',
-    async execute({client, interaction, args}) {
+    description: 'Get informations of playing song!',
+    async execute({ client, interaction, args }) {
 
         const queue = client.queue
         const server_queue = queue.get(interaction.guild.id)
@@ -40,14 +40,12 @@ export default new SlashCommand({
             return part
         }
 
-        let nowplayingembed = new Discord.MessageEmbed()
-            .setColor(roleColor(interaction))
+        let nowplayingembed = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor(roleColor(interaction)))
             .setTitle(`${server_queue.songs[0].title}`)
             .setURL(server_queue.songs[0].customurl)
             .setDescription(`<@${server_queue.songs[0].addedid}> added from **${server_queue.songs[0].type}**\n
             ${elapsedtime}<:transparent:890623794421592104>${splitbar(bar)}<:transparent:890623794421592104>${totaltime}`)
-            interaction.followUp({ embeds: [nowplayingembed] })
-
-
+        interaction.followUp({ embeds: [nowplayingembed] })
     }
 })

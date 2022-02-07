@@ -7,16 +7,16 @@ import { SlashCommand } from "../../structures/SlashCommand";
 
 export default new SlashCommand({
     name: 'lyrics',
-    description:'Get the lyrics of the playing song!',
+    description: 'Get the lyrics of the playing song!',
     options: [
         {
             name: "query",
-            type: "STRING",
+            type: Discord.ApplicationCommandOptionType.String,
             description: "Which song you want get lyrics?",
             required: false
         }
     ],
-    async execute({client, interaction, args}) {
+    async execute({ client, interaction, args }) {
 
         let emote = client.emojis.cache.get('899299715412291616')
 
@@ -24,12 +24,12 @@ export default new SlashCommand({
             const queue = client.queue
             const server_queue = queue.get(interaction.guild.id)
 
-            if(!server_queue){
-                return interaction.followUp({embeds: [embeds.noQueue(interaction)]})
+            if (!server_queue) {
+                return interaction.followUp({ embeds: [embeds.noQueue(interaction)] })
             }
 
-            let loading = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            let loading = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(`${emote} **Searching for lyrics...**`)
             interaction.followUp({ embeds: [loading] });
 
@@ -38,11 +38,11 @@ export default new SlashCommand({
             let ismedia = media.videoDetails.media?.song
 
             if (!ismedia) {
-                const embed = new Discord.MessageEmbed()
-                    .setColor(roleColor(interaction))
-                    .setTitle(`**This video does not contain any songs**`)
+                const embed = new Discord.Embed()
+                    .setColor(Discord.Util.resolveColor(roleColor(interaction)))
+                    .setTitle(`This video does not contain any songs`)
                     .setDescription(`You can search lyrics manually within passing few arguments`)
-                    .addField(`Usage`, `/lyrics <query: song name/lyrics from song>`)
+                    .addField({name: `Usage`, value: `/lyrics <query: song name/lyrics from song>`})
                 return interaction.editReply({ embeds: [embed] });
             }
 
@@ -51,46 +51,40 @@ export default new SlashCommand({
             let lyrics = await finder(title, "");
 
             if (!lyrics) {
-                let errorembed = new Discord.MessageEmbed()
+                let errorembed = new Discord.Embed()
                     .setDescription(`**Lyrics is not found with** \`${title}\``)
-                    .setColor(roleColor(interaction))
-                    interaction.editReply({ embeds: [errorembed] })
+                    .setColor(Discord.Util.resolveColor(roleColor(interaction)))
+                interaction.editReply({ embeds: [errorembed] })
             } else {
-                let lyricsEmbed = new Discord.MessageEmbed()
-                    .setColor(roleColor(interaction))
-                    .setAuthor(`${title}`)
-                    .setDescription(lyrics)
+                let lyricsEmbed = new Discord.Embed()
+                    .setColor(Discord.Util.resolveColor(roleColor(interaction)))
+                    .setAuthor({ name: `${title}` })
+                    .setDescription(`${lyrics.length >= 2048 ? lyrics.substring(0, 2045) + '...' : lyrics}`)
                     .setTimestamp()
-
-                if (lyricsEmbed.description.length >= 2048)
-                    lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 2045)}...`;
                 return interaction.editReply({ embeds: [lyricsEmbed] })
             }
 
         } else {
             const title = args.getString('query')
 
-            let loading = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            let loading = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(`${emote} **Searching for lyrics of ${title}**...`)
             interaction.followUp({ embeds: [loading] });
 
             const lyrics = await finder(title, "");
 
             if (!lyrics) {
-                let errorembed = new Discord.MessageEmbed()
-                    .setColor(roleColor(interaction))
+                let errorembed = new Discord.Embed()
+                    .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                     .setDescription(`**Lyrics is not found!**`)
                 interaction.editReply({ embeds: [errorembed] })
             } else {
-                let lyricsEmbed = new Discord.MessageEmbed()
-                    .setAuthor(`${title}`)
-                    .setDescription(lyrics)
+                let lyricsEmbed = new Discord.Embed()
+                    .setAuthor({ name: `${title}` })
+                    .setDescription(`${lyrics.length >= 2048 ? lyrics.substring(0, 2045) + '...' : lyrics}`)
                     .setTimestamp()
-                    .setColor(roleColor(interaction))
-
-                if (lyricsEmbed.description.length >= 2048)
-                    lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 2045)}...`;
+                    .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 return interaction.editReply({ embeds: [lyricsEmbed] })
             }
         }

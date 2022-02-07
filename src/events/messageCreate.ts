@@ -6,12 +6,13 @@ import { OWNERS } from "../util/lechsTypings";
 import afkCheck from '../database/afk'
 import saidPrefix from "../database/saidPrefix";
 import getPrefix from "../database/getPrefix";
+import { ExtendedMessage } from "../typings/Command";
 
 const cooldowns: Discord.Collection<string, any> = new Discord.Collection();
 
 export default new Event("messageCreate", async (message) => {
     if (message.author.bot) return;
-    if (!message.guild.me.permissions.has('SEND_MESSAGES')) return;
+    if (!message.guild.me.permissions.has('SendMessages')) return;
 
     afkCheck(message)
     //console.log(`${message.content} | ${message.guild.name}`);
@@ -20,11 +21,12 @@ export default new Event("messageCreate", async (message) => {
 
     if (!message.content.startsWith(prefix)) return
 
-    if (!message.guild.me.permissions.has('ADMINISTRATOR')) {
-        const embed = new Discord.MessageEmbed()
-            .setAuthor(`Missing permissions`, message.author.displayAvatarURL({ dynamic: true }))
+    if (!message.guild.me.permissions.has('Administrator')) {
+        const embed = new Discord.Embed()
+            .setAuthor({ name: client.user.tag, iconURL: client.user.displayAvatarURL() })
+            .setTitle('Missing permissions for lechsbott')
             .setDescription(`Need to \`Administrator\` permission to execute commands`)
-            .setColor(roleColor(message))
+            .setColor(Discord.Util.resolveColor('Red'))
         return message.channel.send({ embeds: [embed] }).catch(err => { })
     }
 
@@ -56,8 +58,8 @@ export default new Event("messageCreate", async (message) => {
 
                         console.log(`${message.author.tag} used ${prefix}${command.name} many times and catched to ${time_left.toFixed(1)}s cooldown`)
 
-                        let embed = new Discord.MessageEmbed()
-                            .setColor(roleColor(message))
+                        let embed = new Discord.Embed()
+                            .setColor(Discord.Util.resolveColor('Red'))
                             .setDescription(`**Slowly slowly, please wait ${time_left.toFixed(1)}s to type a command**`)
                         return message.channel.send({ embeds: [embed] })
                     }
@@ -78,8 +80,8 @@ export default new Event("messageCreate", async (message) => {
                 } else {
                     console.log(`${message.author.tag} used an owner command ${cmd} in ${message.guild.name}`)
 
-                    return command.execute({ client, message, args, cmd})
-                    
+                    return command.execute({ client, message, args, cmd })
+
                 }
             }
 
@@ -91,11 +93,11 @@ export default new Event("messageCreate", async (message) => {
                 })
 
                 if (!message.member.permissions.has(rawperms)) {
-                    const embed = new Discord.MessageEmbed()
-                        .setColor(roleColor(message))
-                        .setAuthor(`${message.author.tag}`, message.author.displayAvatarURL({ dynamic: true }))
-                        .setTitle('Missing permissions')
-                        .setDescription(`You can't use this command, need to \`${rawperms.join(' ').toLowerCase()}\` permission(s) to use it!`)
+                    const embed = new Discord.Embed()
+                        .setColor(Discord.Util.resolveColor('Red'))
+                        .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                        .setTitle('Missing permissions for you')
+                        .setDescription(`You can't use this command, need to \`${rawperms.join(' ')}\` permission(s) to use it!`)
                     return message.channel.send({ embeds: [embed] });
                 }
             }
@@ -107,28 +109,29 @@ export default new Event("messageCreate", async (message) => {
                 })
 
                 if (!message.guild.me.permissions.has(rawperms)) {
-                    const embed = new Discord.MessageEmbed()
-                        .setColor(roleColor(message))
-                        .setAuthor(`${client.user.tag}`, client.user.displayAvatarURL({ dynamic: true }))
-                        .setTitle('Missing permissions')
+                    const embed = new Discord.Embed()
+                        .setColor(Discord.Util.resolveColor('Red'))
+                        .setAuthor({ name: client.user.tag, iconURL: client.user.displayAvatarURL() })
+                        .setTitle('Missing permissions for lechsbott')
                         .setDescription(`We can't execute this command, need to \`${rawperms.join(' ')}\` permission(s) to use it!`)
                     return message.channel.send({ embeds: [embed] });
                 }
             }
 
-
-
-            command.execute({client, message, args, cmd})
-
-
             console.log(`${message.author.tag} has used ${prefix}${cmd} in ${message.guild.name}`)
+            command.execute({ client, message, args, cmd }).catch(error => errorFunction(error, message))
+
         }
     } catch (err) {
-        let errembed = new Discord.MessageEmbed()
-            .setColor(roleColor(message))
-            .setDescription('There was an error trying to execute this command!')
-        message.channel.send({ embeds: [errembed] })
-        console.log(err)
+        return errorFunction(err, message)
     }
 
 })
+
+function errorFunction(error: string, message: ExtendedMessage) {
+    console.log(error)
+    let errembed = new Discord.Embed()
+        .setColor(Discord.Util.resolveColor('Red'))
+        .setDescription('There was an error trying to execute this command!')
+    message.channel.send({ embeds: [errembed] })
+}

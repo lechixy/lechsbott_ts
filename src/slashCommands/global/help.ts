@@ -27,12 +27,12 @@ export default new SlashCommand({
 
         fields.push(data)
 
-        const embed = new Discord.MessageEmbed()
-            .setAuthor({name: `Command List`, iconURL: `${interaction.user.displayAvatarURL({ dynamic: true })}`})
+        const embed = new Discord.Embed()
+            .setAuthor({name: `Command List`, iconURL: interaction.user.displayAvatarURL()})
             .setDescription(`A list of commands for help about complicated commands!`)
-            .addFields(fields)
+            .addFields(...fields)
             .setTimestamp()
-            .setColor(roleColor(interaction))
+            .setColor(Discord.Util.resolveColor(roleColor(interaction)))
         return interaction.followUp({ embeds: [embed] });
     }
 })

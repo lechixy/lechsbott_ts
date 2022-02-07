@@ -13,7 +13,7 @@ interface ExecuteOptions {
     cmd: string;
 }
 
-type ExecuteFunction = (options: ExecuteOptions) => any;
+type ExecuteFunction = (options: ExecuteOptions) => Promise<any>;
 
 export type CommandType = {
     description?: string;

@@ -17,15 +17,17 @@ export default new SlashCommand({
 
         if(server_queue.playingInfo === true){
             server_queue.playingInfo = false
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
-                .setDescription(`**Playing info is now disabled**\nTracks playing info won't be send until you enable that`)
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
+                .setTitle(`Playing info is disabled`)
+                .setDescription(`Tracks playing info won't be send until you enable that!`)
             return interaction.followUp({ embeds: [embed] });
         } else {
             server_queue.playingInfo = true
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
-                .setDescription(`**Playing info is now enabled**\nTracks playing info will be send`)
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
+                .setTitle(`Playing info is enabled`)
+                .setDescription(`Tracks playing info embed will be send with new song!`)
             return interaction.followUp({ embeds: [embed] });
         }
 

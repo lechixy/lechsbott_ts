@@ -25,14 +25,14 @@ export async function songFinder(interaction: ExtendedInteraction, args: string[
 
     let track: Track
 
-    if(args[0].includes(spotifyurl)){
+    if (args[0].includes(spotifyurl)) {
         interaction.followUp(`${spotifyemoji} **Searching** \`${args[0]}\``);
 
         track = await Track.from(args, fromType.splink, 'YouTube', interaction.member);
 
         if (track === undefined) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(
                     `**There was an error getting the track, we can't do that!**`
                 );
@@ -49,8 +49,8 @@ export async function songFinder(interaction: ExtendedInteraction, args: string[
         track = await Track.from(args, fromType.ytlink, 'YouTube', interaction.member);
 
         if (track === undefined) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(
                     `**There was an error getting the track, we can't do that!**`
                 );
@@ -65,8 +65,8 @@ export async function songFinder(interaction: ExtendedInteraction, args: string[
         track = await Track.from(args, fromType.ytsearch, 'YouTube', interaction.member);
 
         if (!track) {
-            const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(
                     `**There was an error getting the track, we can't do that!**`
                 );

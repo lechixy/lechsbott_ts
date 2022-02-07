@@ -30,21 +30,21 @@ export default new SlashCommand({
             if(lechplayer.state.status === 'playing'){
                 lechplayer.pause()
     
-                const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+                const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(`**⏸️ Paused**`)
                 return interaction.followUp({ embeds: [embed] });
             } else if(lechplayer.state.status === 'paused') {
-                const embed = new Discord.MessageEmbed()
-                .setColor(roleColor(interaction))
+                const embed = new Discord.Embed()
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(`**⏸️ Already paused**`)
                 return interaction.followUp({ embeds: [embed] });
             }
         } catch (err) {
             console.log(err)
 
-            const embed = new Discord.MessageEmbed()
-            .setColor(roleColor(interaction))
+            const embed = new Discord.Embed()
+            .setColor(Discord.Util.resolveColor(roleColor(interaction)))
             .setDescription(`There is an error trying to pause player, try later!`)
             return interaction.followUp({ embeds: [embed] });
         }

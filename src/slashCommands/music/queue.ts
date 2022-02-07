@@ -34,9 +34,9 @@ export default new SlashCommand({
 
         if (server_queue.songs.length < 2) {
 
-            let queue1 = new Discord.MessageEmbed()
-                .setAuthor(`${interaction.guild.name}`, interaction.guild.iconURL({ dynamic: true }))
-                .setColor(roleColor(interaction))
+            let queue1 = new Discord.Embed()
+                .setAuthor({name: interaction.guild.name, iconURL: interaction.guild.iconURL()})
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setTitle(`${server_queue.songs[0].title}`)
                 .setURL(server_queue.songs[0].customurl)
                 .setDescription(`<@${server_queue.songs[0].addedid}> added from **${server_queue.songs[0].type}**\n
@@ -55,13 +55,13 @@ export default new SlashCommand({
             <@${server_queue.songs[0].addedid}> added from **${server_queue.songs[0].type}**\n
             ${elapsedtime}<:transparent:890623794421592104>${splitbar(bar)}<:transparent:890623794421592104>${totaltime}`
 
-            let queue1 = new Discord.MessageEmbed()
-                .setAuthor(`${interaction.guild.name}`, interaction.guild.iconURL({ dynamic: true }))
+            let queue1 = new Discord.Embed()
+                .setAuthor({name: interaction.guild.name, iconURL: interaction.guild.iconURL()})
                 .setTitle('In Queue')
                 .setDescription(`${string}`)
-                .setColor(roleColor(interaction))
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 //
-                .addField(`Now Playing`, `${npp}`)
+                .addField({name: `Now Playing`, value: `${npp}`})
                 interaction.followUp({ embeds: [queue1] })
                 
         } else if(server_queue.songs.length > 11){
@@ -74,13 +74,13 @@ export default new SlashCommand({
             <@${server_queue.songs[0].addedid}> added from **${server_queue.songs[0].type}**\n
             ${elapsedtime}<:transparent:890623794421592104>${splitbar(bar)}<:transparent:890623794421592104>${totaltime}`
 
-            let queue1 = new Discord.MessageEmbed()
-                .setAuthor(`${interaction.guild.name}`, interaction.guild.iconURL({ dynamic: true }))
+            let queue1 = new Discord.Embed()
+                .setAuthor({name: interaction.guild.name, iconURL: interaction.guild.iconURL()})
                 .setTitle('In Queue')
                 .setDescription(`${string}`)
-                .setColor(roleColor(interaction))
+                .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 //
-                .addField(`Now Playing`, `${npp}`)
+                .addField({name: `Now Playing`, value: `${npp}`})
                 interaction.followUp({ embeds: [queue1] })
         }
 
