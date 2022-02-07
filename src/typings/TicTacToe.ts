@@ -1,4 +1,4 @@
-import { User, MessageButtonStyle } from "discord.js";
+import { User } from "discord.js";
 
 export type PlayerObject = {
     emoji: string,
