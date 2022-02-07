@@ -1,4 +1,5 @@
-import {
+import Discord, {
+    ActivityType,
     ApplicationCommandDataResolvable,
     Client,
     ClientEvents,
@@ -28,9 +29,17 @@ export class ExtendedClient extends Client {
 
     constructor() {
         console.log(`Starting the main client for process`)
+
+        let intents = [
+            Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildVoiceStates,
+            Discord.GatewayIntentBits.GuildMembers, Discord.GatewayIntentBits.GuildPresences,
+            Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildBans,
+            Discord.GatewayIntentBits.GuildEmojisAndStickers, Discord.GatewayIntentBits.GuildMessageReactions
+        ]
+
         super({
             shards: 'auto',
-            intents: 2048,
+            intents: intents,
         });
     }
 
@@ -135,7 +144,7 @@ export class ExtendedClient extends Client {
 
             subCounter(this)
 
-            this.user.setActivity(/*`${total.toLocaleString()} members!`,*/`cry baby!`, { type: 2 })
+            this.user.setActivity(/*`${total.toLocaleString()} members!`,*/`cry baby!`, { type: ActivityType.Listening })
             this.user.setPresence({ status: "idle"})
             console.log(`${this.user.tag} is now online!`);
         });

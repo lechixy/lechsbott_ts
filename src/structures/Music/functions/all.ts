@@ -1,4 +1,5 @@
 import { client } from "../../.."
+import Discord from "discord.js"
 
 export function removeAndClear(guildId: any, disconnect = false) {
 
@@ -30,7 +31,7 @@ export function findTypeAndSend(content: any, method: any): Promise<any> {
 }
 
 export function defineAuthor(msg: any, value: any): any {
-    if (msg.type !== 'APPLICATION_COMMAND') {
+    if (msg.type !== Discord.MessageType.ChatInputCommand) {
         let checkvalue = {
             "username": msg.author.username,
             "id": msg.author.id,

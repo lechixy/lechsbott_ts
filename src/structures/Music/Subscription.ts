@@ -8,7 +8,7 @@ import {
 import Discord, { StageChannel, VoiceChannel } from 'discord.js';
 import { ExtendedInteraction } from '../../typings/SlashCommand';
 import { roleColor } from '../../util/lechsFunctions';
-import { defineAuthor, removeAndClear, findTypeAndSend, clearAndStopPlayer } from './functions/all';
+import { removeAndClear, findTypeAndSend, clearAndStopPlayer } from './functions/all';
 import { Track } from './Track';
 import { client } from '../../';
 
@@ -19,7 +19,7 @@ export class lechs_Subscription {
 	public queueLock = false;
 	public readyLock = false;
 	public voiceChannel: VoiceChannel | StageChannel;
-	public lastRespond: any;
+	public lastRespond: ExtendedInteraction;
 	public isPlaying: boolean;
 	public resource: AudioResource<Track>;
 	public playingInfo = true;
@@ -115,7 +115,7 @@ export class lechs_Subscription {
 	private async processQueue(track?: Track): Promise<void> {
 
 		if (this.songs[1] && track) {
-			let memberavatar = defineAuthor(this.lastRespond, 'displayAvatarURL')
+			let memberavatar = this.lastRespond.user.displayAvatarURL()
 			let queueInfo = new Discord.Embed()
 				.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
 				.setAuthor({ name: `Added to queue`, iconURL: `${memberavatar}` })
@@ -124,7 +124,7 @@ export class lechs_Subscription {
 				.setTimestamp()
 				.setFooter({ text: `${track.addedby.user.username}` });
 
-			return this.lastRespond.followUp({ embeds: [queueInfo] }, this.lastRespond).then((message) => {
+			return this.lastRespond.followUp({ embeds: [queueInfo] }).then((message: any) => {
 				message.react('👍');
 			})
 		}
@@ -152,7 +152,7 @@ export class lechs_Subscription {
 			if (this.playingInfo === true && this.mode === "default") {
 				let playing = new Discord.Embed()
 					.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
-					.setAuthor({name: `Now playing`, iconURL: `${defineAuthor(this.lastRespond, 'displayAvatarURL')}`})
+					.setAuthor({name: `Now playing`, iconURL: this.lastRespond.user.displayAvatarURL()})
 					.setTitle(`${nextTrack.title}`)
 					.setURL(`${nextTrack.customurl}`)
 					.setFooter({text: `${nextTrack.addedby.user.username}`})
