@@ -1,11 +1,12 @@
-import { createAudioResource } from '@discordjs/voice';
+import { createAudioResource, StreamType } from '@discordjs/voice';
 import { GuildMember } from 'discord.js';
-import { stream } from 'play-dl'
+import dl from 'play-dl'
 import ytdl from 'ytdl-core'
 import { toTimestamp } from './functions/all';
 import { getPreview, getTracks } from 'spotify-url-info'
 import ytSearch, { ChannelSearchResult, LiveSearchResult, PlaylistSearchResult, VideoSearchResult } from 'yt-search'
 import { fromType } from '../../typings/fromSelections'
+import prism from 'prism-media';
 
 export type songFace = {
     url: string,
@@ -41,17 +42,41 @@ export class Track implements songFace {
     streamType: string;
 
     public async createAudioResource() {
-        if(this.streamType === 'YouTube'){
-            const process = await stream(this.url)
+        if (this.streamType === 'YouTube') {
+            const FFMPEG_OPUS_ARGUMENTS = [
+                '-loglevel',
+                '0',
+                '-acodec',
+                'libopus',
+                '-f',
+                'opus',
+                '-ar',
+                '48000',
+                '-ac',
+                '2',
+            ];
 
-            return createAudioResource(process.stream)
+            const info = await dl.video_info(this.url)
+
+            if (!info) {
+                //Turns null for player's error checking
+                return null
+            }
+
+            const highestAudio = info.format[info.format.length - 1].url
+
+            const audio = new prism.FFmpeg({
+                args: [...FFMPEG_OPUS_ARGUMENTS, "-ss", "5", highestAudio],
+            });
+
+            return createAudioResource(audio, { inputType: StreamType.Opus })
         }
     }
 
-    public static async videoFinder(query: string[] | string): Promise<VideoSearchResult | LiveSearchResult | PlaylistSearchResult | ChannelSearchResult>{
+    public static async videoFinder(query: string[] | string): Promise<VideoSearchResult | LiveSearchResult | PlaylistSearchResult | ChannelSearchResult> {
         let video_result: any;
 
-        if(typeof query === "string"){
+        if (typeof query === "string") {
             video_result = await ytSearch(query);
         } else {
             video_result = await ytSearch(query.join(' '));
@@ -64,13 +89,13 @@ export class Track implements songFace {
         if (type === 'YouTube Link') {
             let info: any;
 
-            try{
+            try {
                 info = await ytdl.getInfo(url[0])
-            } catch(err){
+            } catch (err) {
                 console.log(err)
                 return undefined
             }
-            
+
 
 
             return new Track({
@@ -83,17 +108,17 @@ export class Track implements songFace {
                 addedid: user.id,
                 duration: toTimestamp(info.videoDetails.lengthSeconds),
             });
-        } else if(type === 'YouTube Search'){
+        } else if (type === 'YouTube Search') {
             let info: any;
 
-            try{
+            try {
                 info = await this.videoFinder(url);
-            } catch(err){
+            } catch (err) {
                 console.log(err)
                 return undefined
             }
 
-            if(!info){
+            if (!info) {
                 return
             }
 
@@ -107,14 +132,14 @@ export class Track implements songFace {
                 addedid: user.id,
                 duration: info.timestamp,
             });
-        } else if(type === 'Spotify Link'){
+        } else if (type === 'Spotify Link') {
             let getinfo: any;
             let info: any;
 
-            try{
+            try {
                 getinfo = await getPreview(url[0])
                 info = await this.videoFinder(getinfo.title);
-            } catch(err){
+            } catch (err) {
                 console.log(err)
                 return undefined
             }

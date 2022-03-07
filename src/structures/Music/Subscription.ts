@@ -79,7 +79,7 @@ export class lechs_Subscription {
 			interaction.guild.me.voice.setSuppressed(false).catch(err => {
 
 				const embed = new Discord.Embed()
-					.setAuthor({name: interaction.member.user.tag, iconURL: interaction.member.displayAvatarURL()})
+					.setAuthor({ name: interaction.member.user.tag, iconURL: interaction.member.displayAvatarURL() })
 					.setDescription(`lechsbott is currently an audience member, make it speaker to listen the music`)
 					.setColor(Discord.Util.resolveColor('Red'))
 				return interaction.channel.send({ embeds: [embed] })
@@ -88,7 +88,6 @@ export class lechs_Subscription {
 
 		const checkmembers = setInterval(() => {
 
-			console.log('checking the members')
 			if (this?.voiceChannel.members.size === 1 && this?.voiceChannel.members.first().id === client.user.id) {
 				clearAndStopPlayer(this?.guildId)
 
@@ -143,7 +142,31 @@ export class lechs_Subscription {
 		try {
 			if (nextTrack.streamType === "YouTube") {
 				// Converts Track into an AudioResource
-				const resource = await nextTrack.createAudioResource();
+				const resource = await nextTrack?.createAudioResource();
+
+				if (!resource) {
+					//Removes track from queue
+					this.songs.shift()
+
+					let infotext: string
+					//Checks next song
+					if(this.songs[0]){
+						infotext = `next track available at queue and player is skipping to it!`
+					} else {
+						infotext = `no track is available so clearing the queue!`
+					}
+
+					this.processQueue()
+					let playing = new Discord.Embed()
+						.setColor(Discord.Util.resolveColor('Red'))
+						.setAuthor({ name: `An error occurred while playing track`, iconURL: this.lastRespond.user.displayAvatarURL() })
+						.setDescription(`We can't play this track, ${infotext}`)
+						.setTimestamp();
+
+					this.textChannel.send({ embeds: [playing] })
+					return
+				}
+
 				this.audioPlayer.play(resource);
 				this.isPlaying = true;
 				this.resource = resource;
@@ -152,10 +175,10 @@ export class lechs_Subscription {
 			if (this.playingInfo === true && this.mode === "default") {
 				let playing = new Discord.Embed()
 					.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
-					.setAuthor({name: `Now playing`, iconURL: this.lastRespond.user.displayAvatarURL()})
+					.setAuthor({ name: `Now playing`, iconURL: this.lastRespond.user.displayAvatarURL() })
 					.setTitle(`${nextTrack.title}`)
 					.setURL(`${nextTrack.customurl}`)
-					.setFooter({text: `${nextTrack.addedby.user.username}`})
+					.setFooter({ text: `${nextTrack.addedby.user.username}` })
 					.setTimestamp();
 
 				this.textChannel.send({ embeds: [playing] })
@@ -164,6 +187,7 @@ export class lechs_Subscription {
 			this.queueLock = false;
 		} catch (error) {
 			console.log(error)
+			this.isPlaying = false;
 			this.queueLock = false;
 		}
 	}

@@ -133,7 +133,7 @@ export class ExtendedClient extends Client {
             });
         })
 
-        this.once("ready", () => {
+        this.on("ready", () => {
 
             let guilds = this.guilds.cache.map(x => x.id)
 
@@ -144,8 +144,6 @@ export class ExtendedClient extends Client {
 
             subCounter(this)
 
-            this.user.setActivity(/*`${total.toLocaleString()} members!`,*/`cry baby!`, { type: ActivityType.Listening })
-            this.user.setPresence({ status: "idle"})
             console.log(`${this.user.tag} is now online!`);
         });
     }

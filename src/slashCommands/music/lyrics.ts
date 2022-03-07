@@ -1,4 +1,4 @@
-import finder from 'lyrics-parse'
+import genius from 'genius-lyrics'
 import ytdl from 'ytdl-core'
 import Discord from 'discord.js'
 import * as embeds from './embeds/all'
@@ -48,7 +48,10 @@ export default new SlashCommand({
 
             let title = `${media.videoDetails.media?.song} - ${media.videoDetails.media?.artist} `
 
-            let lyrics = await finder(title, "");
+            let apisearch = await client.utils.genius.songs.search(title)
+
+            let song = apisearch[0]
+            let lyrics = await song.lyrics()
 
             if (!lyrics) {
                 let errorembed = new Discord.Embed()
@@ -58,6 +61,7 @@ export default new SlashCommand({
             } else {
                 let lyricsEmbed = new Discord.Embed()
                     .setColor(Discord.Util.resolveColor(roleColor(interaction)))
+                    .setThumbnail(song.thumbnail)
                     .setAuthor({ name: `${title}` })
                     .setDescription(`${lyrics.length >= 2048 ? lyrics.substring(0, 2045) + '...' : lyrics}`)
                     .setTimestamp()
@@ -72,7 +76,10 @@ export default new SlashCommand({
                 .setDescription(`${emote} **Searching for lyrics of ${title}**...`)
             interaction.followUp({ embeds: [loading] });
 
-            const lyrics = await finder(title, "");
+            let apisearch = await client.utils.genius.songs.search(title)
+
+            let song = apisearch[0]
+            let lyrics = await song.lyrics()
 
             if (!lyrics) {
                 let errorembed = new Discord.Embed()
@@ -82,6 +89,7 @@ export default new SlashCommand({
             } else {
                 let lyricsEmbed = new Discord.Embed()
                     .setAuthor({ name: `${title}` })
+                    .setThumbnail(song.thumbnail)
                     .setDescription(`${lyrics.length >= 2048 ? lyrics.substring(0, 2045) + '...' : lyrics}`)
                     .setTimestamp()
                     .setColor(Discord.Util.resolveColor(roleColor(interaction)))
