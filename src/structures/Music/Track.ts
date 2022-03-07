@@ -66,10 +66,10 @@ export class Track implements songFace {
             const highestAudio = info.format[info.format.length - 1].url
 
             const audio = new prism.FFmpeg({
-                args: [...FFMPEG_OPUS_ARGUMENTS, "-ss", "5", highestAudio],
+                args: [...FFMPEG_OPUS_ARGUMENTS, "-ss", "5", "-i", highestAudio],
             });
 
-            return createAudioResource(audio, { inputType: StreamType.Opus })
+            return createAudioResource(audio, { inputType: StreamType.OggOpus })
         }
     }
 
