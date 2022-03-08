@@ -16,6 +16,7 @@ export class lechs_Subscription {
 
 	public guildId: any;
 	public songs: Track[];
+	public status: string = "default";
 	public queueLock = false;
 	public readyLock = false;
 	public voiceChannel: VoiceChannel | StageChannel;
@@ -45,9 +46,16 @@ export class lechs_Subscription {
 				`Audio player transitioned ${oldState.status} to ${newState.status}`
 			);
 
-			if (newState.status === "idle" && oldState.status !== "idle") {
-				this.isPlaying = false;
+			if(newState.status === "playing") {
+				this.isPlaying = true;
+			}
 
+			if (newState.status === "idle" && oldState.status !== "idle") {
+
+				this.isPlaying = false;
+				if(this.status === "seeking"){
+					return this.processQueue()
+				}
 
 				if (this.songs[1]) {
 					if (this.mode === "default") {
@@ -129,9 +137,10 @@ export class lechs_Subscription {
 		}
 
 		if (this.queueLock || this.audioPlayer.state.status !== AudioPlayerStatus.Idle || this.songs.length === 0) {
-			if (this.mode !== "default") {
-
-			} else return;
+			if(this.songs.length === 0){
+				return removeAndClear(this.guildId)
+			}
+			return
 		}
 		//Locks the queue for any enqueue problems
 		this.queueLock = true;
@@ -172,7 +181,7 @@ export class lechs_Subscription {
 				this.resource = resource;
 			}
 
-			if (this.playingInfo === true && this.mode === "default") {
+			if (this.playingInfo === true && this.mode === "default" && this.status === "default") {
 				let playing = new Discord.Embed()
 					.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
 					.setAuthor({ name: `Now playing`, iconURL: this.lastRespond.user.displayAvatarURL() })
@@ -184,9 +193,11 @@ export class lechs_Subscription {
 				this.textChannel.send({ embeds: [playing] })
 			}
 
+			this.status === "default";
 			this.queueLock = false;
 		} catch (error) {
 			console.log(error)
+			this.status === "default";
 			this.isPlaying = false;
 			this.queueLock = false;
 		}

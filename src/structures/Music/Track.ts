@@ -2,11 +2,12 @@ import { createAudioResource, StreamType } from '@discordjs/voice';
 import { GuildMember } from 'discord.js';
 import dl from 'play-dl'
 import ytdl from 'ytdl-core'
-import { toTimestamp } from './functions/all';
+import { toTimestamp, timeConverter } from './functions/all';
 import { getPreview, getTracks } from 'spotify-url-info'
 import ytSearch, { ChannelSearchResult, LiveSearchResult, PlaylistSearchResult, VideoSearchResult } from 'yt-search'
 import { fromType } from '../../typings/fromSelections'
 import prism from 'prism-media';
+import { Readable } from 'stream';
 
 export type songFace = {
     url: string,
@@ -17,6 +18,7 @@ export type songFace = {
     addedby: any,
     addedid: string | number,
     duration: string,
+    seekTime?: string,
 }
 
 export class Track implements songFace {
@@ -28,8 +30,10 @@ export class Track implements songFace {
     public readonly addedby: GuildMember;
     public readonly addedid: any;
     public readonly duration: string;
+    public seekTime: string;
+    public stream: Readable;
 
-    public constructor({ url, title, type, streamType, customurl, addedby, addedid, duration }: songFace) {
+    public constructor({ url, title, type, streamType, customurl, addedby, addedid, duration, seekTime }: songFace) {
         this.url = url;
         this.title = title;
         this.type = type;
@@ -38,38 +42,33 @@ export class Track implements songFace {
         this.addedby = addedby;
         this.addedid = addedid;
         this.duration = duration;
+
+        if (this.seekTime) {
+            this.seekTime = seekTime;
+        } else this.seekTime = "0";
     }
     streamType: string;
 
     public async createAudioResource() {
         if (this.streamType === 'YouTube') {
-            const FFMPEG_OPUS_ARGUMENTS = [
-                '-loglevel',
-                '0',
-                '-acodec',
-                'libopus',
-                '-f',
-                'opus',
-                '-ar',
-                '48000',
-                '-ac',
-                '2',
-            ];
 
-            const info = await dl.video_info(this.url)
+            //Check seekTime for this if it isn't equal to zero go and get ffmpeg
+            if (this.seekTime !== "0") {
+                return createAudioResource(await this.getFFmpegForSeek(), { inputType: StreamType.OggOpus })
+            }
 
-            if (!info) {
+            const stream = await dl.stream(this.url, { discordPlayerCompatibility: true }).catch(err => {
+                console.log(err);
+                return null
+            })
+
+            if (!stream) {
                 //Turns null for player's error checking
                 return null
             }
+            this.stream = stream.stream;
 
-            const highestAudio = info.format[info.format.length - 1].url
-
-            const audio = new prism.FFmpeg({
-                args: [...FFMPEG_OPUS_ARGUMENTS, "-ss", "5", "-i", highestAudio],
-            });
-
-            return createAudioResource(audio, { inputType: StreamType.OggOpus })
+            return createAudioResource(this.stream)
         }
     }
 
@@ -155,5 +154,55 @@ export class Track implements songFace {
                 duration: info.duration.timestamp,
             });
         }
+    }
+
+    public async getFFmpegForSeek() {
+        if (this.streamType === "YouTube") {
+            const FFMPEG_OPUS_ARGUMENTS = [
+                "-analyzeduration",
+                "0",
+                '-loglevel',
+                '0',
+                '-acodec',
+                'libopus',
+                '-f',
+                'opus',
+                '-ar',
+                '48000',
+                '-ac',
+                '2',
+            ];
+
+            const audio = new prism.FFmpeg({
+                args: [...FFMPEG_OPUS_ARGUMENTS, "-ss", this.seekTime],
+            });
+
+            return this.stream.pipe(audio)
+        }
+    }
+
+    public setSeekTime(time: string) {
+
+        if (time.includes(':')) {
+            const timeIndex = time.split(':')
+
+            //check for hh:mm:ss
+            if (timeIndex.length < 4 && timeIndex.length > 1) {
+                const times = timeIndex.map((value) => {
+                    //hh:mm:ss+s syntax
+                    if (value.length > 2) return null;
+                    //hh:mm:s <--- need to zero for s
+                    if (value.length < 2 && value.length === 1) {
+                        return `0${value}`
+                    } else return null;
+                })
+                console.log(times)
+            } else null
+        }
+        if (parseInt(time) >= timeConverter(this.duration)) return null;
+
+        this.seekTime = time;
+
+        return true
     }
 }
