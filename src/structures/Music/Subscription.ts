@@ -115,6 +115,10 @@ export class lechs_Subscription {
 		void this.processQueue(track);
 	}
 
+	public first(){
+		return this.songs[0] ? this.songs[0] : null;
+	}
+
 	public stop() {
 		this.audioPlayer.stop(true);
 	}
