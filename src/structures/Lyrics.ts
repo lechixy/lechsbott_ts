@@ -2,7 +2,7 @@ import fetch, { Response } from 'node-fetch';
 // import { client } from '..'
 import Genius from 'genius-lyrics';
 import { GENIUS } from '../config.json'
-import { lyrics } from '../typings/lyrics'
+import { lyrics } from '../typings/Lyrics'
 
 const genius = new Genius.Client(GENIUS);
 const lyricsHeader = '</div></div></div></div><div class="hwc"><div class="BNeawe tAd8D AP7Wnd"><div><div class="BNeawe tAd8D AP7Wnd">';
