@@ -183,6 +183,7 @@ export class lechs_Subscription {
 				this.audioPlayer.play(resource);
 				this.isPlaying = true;
 				this.resource = resource;
+				this.status = "default";
 			}
 
 			if (this.playingInfo === true && this.mode === "default" && this.status === "default") {

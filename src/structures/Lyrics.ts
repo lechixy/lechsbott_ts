@@ -1,5 +1,10 @@
 import fetch, { Response } from 'node-fetch';
-import { client } from '..'
+// import { client } from '..'
+import Genius from 'genius-lyrics';
+import { GENIUS } from '../config.json'
+import { lyrics } from '../typings/lyrics'
+
+const genius = new Genius.Client(GENIUS);
 const lyricsHeader = '</div></div></div></div><div class="hwc"><div class="BNeawe tAd8D AP7Wnd"><div><div class="BNeawe tAd8D AP7Wnd">';
 const lyricsFooter = '</div></div></div></div></div><div><span class="hwc"><div class="BNeawe uEec3 AP7Wnd">';
 const nameHeader = '<span><span class="BNeawe tAd8D AP7Wnd">'
@@ -7,7 +12,23 @@ const nameFooter = '</span></span><span class="BNeawe s3v9rd AP7Wnd">'
 const authorHeader = '</span><span><span class="BNeawe s3v9rd AP7Wnd">'
 const authorFooter = '</span></span></div><div class="Q0HXG"></div>'
 
-async function getSong(query: string) {
+class Song implements lyrics {
+    public name: string;
+    public author: string;
+    public lyrics: string;
+    public thumbnail: string;
+    public query: string;
+
+    constructor(name: string, author: string, lyrics: string, thumbnail: string, query: string) {
+        this.name = name;
+        this.author = author;
+        this.lyrics = lyrics;
+        this.thumbnail = thumbnail;
+        this.query = query;
+    }
+}
+
+export default async function getSong(query: string): Promise<Song> {
 
     const url = "https://www.google.com/search?q=";
     let endpoints = [`+lyrics`, '+song+lyrics', '+song'];
@@ -50,30 +71,23 @@ async function getSong(query: string) {
     }
 
     //gets thumbnail from genius api
-    const geniusSearch = await client.utils.genius.songs.search(`${rawName}`)
+    const geniusSearch = await genius.songs.search(`${rawName}`)
     let Thumbnail: string = null
 
-    for(let i = 0; i < geniusSearch.length; i++) {
-        if(geniusSearch[i].artist.name.toLowerCase() === rawAuthor.toLowerCase()) {
-            if(rawName.toLowerCase() === geniusSearch[i].title.toLowerCase() || geniusSearch[i].featuredTitle.toLowerCase() || geniusSearch[i].fullTitle.toLowerCase()){
+    for (let i = 0; i < geniusSearch.length; i++) {
+        if (geniusSearch[i].artist.name.toLowerCase() === rawAuthor.toLowerCase()) {
+            if (rawName.toLowerCase() === geniusSearch[i].title.toLowerCase() || geniusSearch[i].featuredTitle.toLowerCase() || geniusSearch[i].fullTitle.toLowerCase()) {
                 Thumbnail = geniusSearch[i].thumbnail
                 break;
             } else return
         } else return
     }
 
-    class Song {
-        public Name: string = rawName;
-        public Author: string = rawAuthor;
-        public Lyrics: string = rawlyrics;
-        public Thumbnail: string = Thumbnail;
-    }
-
-    return new Song()
+    return new Song(rawName, rawAuthor, rawlyrics, Thumbnail, query)
 }
 
-getSong(`save your tears`).then(x => {
-    if (!x) {
-        console.log('no song')
-    } else console.log(x)
-})
+// getSong(`somebody that i used to know`).then(x => {
+//     if (!x) {
+//         console.log('no song')
+//     } else console.log(x)
+// })

@@ -1,9 +1,9 @@
-import genius from 'genius-lyrics'
 import ytdl from 'ytdl-core'
 import Discord from 'discord.js'
 import * as embeds from './embeds/all'
 import { roleColor } from '../../util/lechsFunctions';
 import { SlashCommand } from "../../structures/SlashCommand";
+import getSong from '../../structures/Lyrics'
 
 export default new SlashCommand({
     name: 'lyrics',
@@ -42,16 +42,14 @@ export default new SlashCommand({
                     .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                     .setTitle(`This video does not contain any songs`)
                     .setDescription(`You can search lyrics manually within passing few arguments`)
-                    .addField({name: `Usage`, value: `/lyrics <query: song name/lyrics from song>`})
+                    .addField({ name: `Usage`, value: `/lyrics <query: song name/lyrics from song>` })
                 return interaction.editReply({ embeds: [embed] });
             }
 
             let title = `${media.videoDetails.media?.song} - ${media.videoDetails.media?.artist} `
 
-            let apisearch = await client.utils.genius.songs.search(title)
-
-            let song = apisearch[0]
-            let lyrics = await song.lyrics()
+            let song = await getSong(title)
+            let lyrics = song?.lyrics
 
             if (!lyrics) {
                 let errorembed = new Discord.Embed()
@@ -61,8 +59,8 @@ export default new SlashCommand({
             } else {
                 let lyricsEmbed = new Discord.Embed()
                     .setColor(Discord.Util.resolveColor(roleColor(interaction)))
-                    .setThumbnail(song.thumbnail)
-                    .setAuthor({ name: `${title}` })
+                    .setThumbnail(song?.thumbnail)
+                    .setAuthor({ name: `${song.author} - ${song.name}` })
                     .setDescription(`${lyrics.length >= 2048 ? lyrics.substring(0, 2045) + '...' : lyrics}`)
                     .setTimestamp()
                 return interaction.editReply({ embeds: [lyricsEmbed] })
@@ -76,10 +74,8 @@ export default new SlashCommand({
                 .setDescription(`${emote} **Searching for lyrics of ${title}**...`)
             interaction.followUp({ embeds: [loading] });
 
-            let apisearch = await client.utils.genius.songs.search(title)
-
-            let song = apisearch[0]
-            let lyrics = await song.lyrics()
+            let song = await getSong(title)
+            let lyrics = song?.lyrics
 
             if (!lyrics) {
                 let errorembed = new Discord.Embed()
@@ -88,15 +84,13 @@ export default new SlashCommand({
                 interaction.editReply({ embeds: [errorembed] })
             } else {
                 let lyricsEmbed = new Discord.Embed()
-                    .setAuthor({ name: `${title}` })
-                    .setThumbnail(song.thumbnail)
+                    .setAuthor({ name: `${song.author} - ${song.name}` })
+                    .setThumbnail(song?.thumbnail)
                     .setDescription(`${lyrics.length >= 2048 ? lyrics.substring(0, 2045) + '...' : lyrics}`)
                     .setTimestamp()
                     .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 return interaction.editReply({ embeds: [lyricsEmbed] })
             }
         }
-
-
     }
 })
