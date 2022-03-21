@@ -22,15 +22,16 @@ export type songFace = {
 }
 
 export class Track implements songFace {
-    public readonly url: string;
-    public readonly title: string;
-    public readonly type: string;
-    public readonly app: string;
-    public readonly customurl: string;
-    public readonly addedby: GuildMember;
-    public readonly addedid: any;
-    public readonly duration: string;
+    public url: string;
+    public title: string;
+    public type: string;
+    public app: string;
+    public customurl: string;
+    public addedby: GuildMember;
+    public addedid: any;
+    public duration: string;
     public seekTime: string;
+    public streamType: string;
     public stream: Readable;
 
     public constructor({ url, title, type, streamType, customurl, addedby, addedid, duration, seekTime }: songFace) {
@@ -42,12 +43,12 @@ export class Track implements songFace {
         this.addedby = addedby;
         this.addedid = addedid;
         this.duration = duration;
+        this.stream = null;
 
         if (this.seekTime) {
             this.seekTime = seekTime;
         } else this.seekTime = "0";
     }
-    streamType: string;
 
     public async createAudioResource() {
         if (this.streamType === 'YouTube') {
@@ -94,7 +95,6 @@ export class Track implements songFace {
                 console.log(err)
                 return undefined
             }
-
 
 
             return new Track({

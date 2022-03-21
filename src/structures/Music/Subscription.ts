@@ -155,7 +155,7 @@ export class lechs_Subscription {
 		try {
 			if (nextTrack.streamType === "YouTube") {
 				// Converts Track into an AudioResource
-				const resource = await nextTrack?.createAudioResource();
+				const resource = await nextTrack.createAudioResource();
 
 				if (!resource) {
 					//Removes track from queue
@@ -207,6 +207,4 @@ export class lechs_Subscription {
 			this.queueLock = false;
 		}
 	}
-
-
 }

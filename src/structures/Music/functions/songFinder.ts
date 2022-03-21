@@ -1,9 +1,7 @@
-import ytSearch from 'yt-search'
-import ytdl, { validateURL } from 'ytdl-core'
-import { YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID } from '../../../config.json'
-import YouTube from 'simple-youtube-api'
-const youtube = new YouTube(YOUTUBE_API_KEY)
-import moment from 'moment'
+import { validateURL } from 'ytdl-core'
+// import { YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID } from '../../../config.json'
+// import YouTube from 'simple-youtube-api'
+// const youtube = new YouTube(YOUTUBE_API_KEY)
 import { Track } from '../../Music/Track';
 import { roleColor } from "../../../util/lechsFunctions";
 import Discord from 'discord.js'
@@ -30,11 +28,11 @@ export async function songFinder(interaction: ExtendedInteraction, args: string[
 
         track = await Track.from(args, fromType.splink, 'YouTube', interaction.member);
 
-        if (track === undefined) {
+        if (!track) {
             const embed = new Discord.Embed()
                 .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(
-                    `**There was an error getting the track, we can't do that!**`
+                    `**There was an error getting the track, try again later!**`
                 );
 
             return await interaction.channel.send({ embeds: [embed] });
@@ -48,11 +46,11 @@ export async function songFinder(interaction: ExtendedInteraction, args: string[
 
         track = await Track.from(args, fromType.ytlink, 'YouTube', interaction.member);
 
-        if (track === undefined) {
+        if (!track) {
             const embed = new Discord.Embed()
                 .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(
-                    `**There was an error getting the track, we can't do that!**`
+                    `**There was an error getting the track, try again later!**`
                 );
 
             return await interaction.channel.send({ embeds: [embed] });
@@ -68,7 +66,7 @@ export async function songFinder(interaction: ExtendedInteraction, args: string[
             const embed = new Discord.Embed()
                 .setColor(Discord.Util.resolveColor(roleColor(interaction)))
                 .setDescription(
-                    `**There was an error getting the track, we can't do that!**`
+                    `**There was an error getting the track, try again later!**`
                 );
 
             return await interaction.channel.send({ embeds: [embed] });

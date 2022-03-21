@@ -40,7 +40,7 @@
         "simple-youtube-api": "^5.2.1",
         "socket.io": "^4.4.1",
         "soundcloud-downloader": "^1.0.0",
-        "spotify-url-info": "^2.2.3",
+        "spotify-url-info": "^2.2.9",
         "string-progressbar": "^1.0.4",
         "ts-node": "^10.4.0",
         "ts-node-dev": "^1.1.8",
