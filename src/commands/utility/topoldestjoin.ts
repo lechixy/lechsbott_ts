@@ -4,7 +4,7 @@ import { roleColor } from "../../util/lechsFunctions";
 import { Command } from '../../structures/Command';
 
 export default new Command({
-    name: `oldestjoin`,
+    name: `topoldestjoin`,
     description: 'Gets top 10 oldest joiners of server!',
     category: 'Utility',
     arguments: `<none>`,

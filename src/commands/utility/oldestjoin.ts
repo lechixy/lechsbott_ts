@@ -5,7 +5,7 @@ import { Command } from '../../structures/Command'
 import Discord from 'discord.js'
 
 export default new Command({
-    name: `oldestcreated`,
+    name: `oldestjoin`,
     description: 'Gets oldest joiner of server!',
     category: 'Utility',
     arguments: `<none>`,

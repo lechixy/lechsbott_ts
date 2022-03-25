@@ -4,8 +4,7 @@ import { roleColor } from "../../util/lechsFunctions";
 import { Command } from '../../structures/Command';
 
 export default new Command({
-    name: `topoldest`,
-    aliases: [`oldests`],
+    name: `topoldestcreated`,
     description: 'Gets top 10 oldest members of server!',
     category: 'Utility',
     arguments: `<none>`,
