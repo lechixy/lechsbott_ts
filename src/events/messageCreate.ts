@@ -132,6 +132,6 @@ function errorFunction(error: string, message: ExtendedMessage) {
     console.log(error)
     let errembed = new Discord.Embed()
         .setColor(Discord.Util.resolveColor('Red'))
-        .setDescription('There was an error trying to execute this command!')
+        .setTitle('There was an error trying to execute this command!')
     message.channel.send({ embeds: [errembed] })
 }

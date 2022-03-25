@@ -24,12 +24,8 @@ export default new Command({
             let endext = command.endsWith('.ts') ? command : command + '.ts'
 
             try {
-
-                delete require.cache[
-                    require.resolve(`../../commands/${category}/${endext}`)
-                ]; //Change the path depending on how are your folders located.
                 client.commands.delete(command);
-                const pull = require(`../../commands/${category}/${endext}`);
+                const pull = await import(`../../commands/${category}/${endext}`);
                 client.commands.set(command, pull);
 
                 return message.channel.send(`**${endext}** was reloaded succesfully!`);

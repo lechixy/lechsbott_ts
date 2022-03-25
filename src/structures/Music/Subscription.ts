@@ -5,10 +5,10 @@ import {
 	createAudioPlayer,
 	VoiceConnection,
 } from '@discordjs/voice';
-import Discord, { StageChannel, VoiceChannel } from 'discord.js';
+import Discord, { StageChannel, GuildTextBasedChannel, VoiceChannel } from 'discord.js';
 import { ExtendedInteraction } from '../../typings/SlashCommand';
 import { roleColor } from '../../util/lechsFunctions';
-import { removeAndClear, findTypeAndSend, clearAndStopPlayer } from './functions/all';
+import { removeAndClear, clearAndStopPlayer } from './functions/all';
 import { Track } from './Track';
 import { client } from '../../';
 
@@ -24,7 +24,7 @@ export class lechs_Subscription {
 	public isPlaying: boolean;
 	public resource: AudioResource<Track>;
 	public playingInfo = true;
-	public textChannel: any;
+	public textChannel: GuildTextBasedChannel;
 	public mode: string = "default";
 	public readonly voiceConnection: VoiceConnection;
 	public readonly audioPlayer: AudioPlayer;
@@ -46,14 +46,14 @@ export class lechs_Subscription {
 				`Audio player transitioned ${oldState.status} to ${newState.status}`
 			);
 
-			if(newState.status === "playing") {
+			if (newState.status === "playing") {
 				this.isPlaying = true;
 			}
 
 			if (newState.status === "idle" && oldState.status !== "idle") {
 
 				this.isPlaying = false;
-				if(this.status === "seeking"){
+				if (this.status === "seeking") {
 					return this.processQueue()
 				}
 
@@ -115,7 +115,7 @@ export class lechs_Subscription {
 		void this.processQueue(track);
 	}
 
-	public first(){
+	public first() {
 		return this.songs[0] ? this.songs[0] : null;
 	}
 
@@ -141,7 +141,7 @@ export class lechs_Subscription {
 		}
 
 		if (this.queueLock || this.audioPlayer.state.status !== AudioPlayerStatus.Idle || this.songs.length === 0) {
-			if(this.songs.length === 0){
+			if (this.songs.length === 0) {
 				return removeAndClear(this.guildId)
 			}
 			return
@@ -150,7 +150,8 @@ export class lechs_Subscription {
 		this.queueLock = true;
 
 		// Selects first track
-		const nextTrack = this.songs[0];
+		const nextTrack = this.first();
+		let infotext: string
 
 		try {
 			if (nextTrack.streamType === "YouTube") {
@@ -161,22 +162,14 @@ export class lechs_Subscription {
 					//Removes track from queue
 					this.songs.shift()
 
-					let infotext: string
 					//Checks next song
-					if(this.songs[0]){
+					if (this.first()) {
 						infotext = `next track available at queue and player is skipping to it!`
 					} else {
 						infotext = `no track is available so clearing the queue!`
 					}
 
 					this.processQueue()
-					let playing = new Discord.Embed()
-						.setColor(Discord.Util.resolveColor('Red'))
-						.setAuthor({ name: `An error occurred while playing track`, iconURL: this.lastRespond.user.displayAvatarURL() })
-						.setDescription(`We can't play this track, ${infotext}`)
-						.setTimestamp();
-
-					this.textChannel.send({ embeds: [playing] })
 					return
 				}
 
@@ -201,6 +194,13 @@ export class lechs_Subscription {
 			this.status === "default";
 			this.queueLock = false;
 		} catch (error) {
+			let playing = new Discord.Embed()
+				.setColor(Discord.Util.resolveColor('Red'))
+				.setAuthor({ name: `An error occurred while playing track`, iconURL: this.lastRespond.user.displayAvatarURL() })
+				.setDescription(`We can't play this track, ${infotext}`)
+				.setTimestamp();
+
+			this.textChannel.send({ embeds: [playing] })
 			console.log(error)
 			this.status === "default";
 			this.isPlaying = false;

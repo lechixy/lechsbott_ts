@@ -113,11 +113,7 @@ export class ExtendedClient extends Client {
         })
 
         //Database
-        mongoose.connect(MONGO_DB_SRV).then(() => {
-            console.log('Successfully connected to lechsbottdb')
-        }).catch((err) => {
-            console.log(err)
-        })
+        this.connectDatabase()
 
         console.log(`Exploring the events`)
         // Event
@@ -146,5 +142,21 @@ export class ExtendedClient extends Client {
 
             console.log(`${this.user.tag} is now online!`);
         });
+    }
+
+    async connectDatabase() {
+        console.log(`Trying to connect lechsbottdb`)
+        mongoose.connect(MONGO_DB_SRV).then(() => {
+            console.log('Successfully connected to lechsbottdb')
+        }).catch((err) => {
+            console.log(err)
+            console.log(`An error occured while connecting lechsbottdb`)
+        })
+        mongoose.connection.on('error', (err) => {
+            console.log(err)
+            console.log(`An error occured while connecting lechsbottdb`)
+            mongoose.connection.removeListener('error', (err) => {})
+            this.connectDatabase()
+        })
     }
 }
