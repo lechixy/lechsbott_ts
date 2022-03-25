@@ -6,7 +6,7 @@ import Discord from 'discord.js'
 
 export default new Command({
     name: `oldestcreated`,
-    description: 'Gets oldest member of server!',
+    description: 'Gets oldest joiner of server!',
     category: 'Utility',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {

@@ -5,7 +5,7 @@ import { Command } from '../../structures/Command';
 
 export default new Command({
     name: `oldestjoin`,
-    description: 'Gets top 10 oldest members of server!',
+    description: 'Gets top 10 oldest joiners of server!',
     category: 'Utility',
     arguments: `<none>`,
     async execute({client, message, args, cmd}) {
