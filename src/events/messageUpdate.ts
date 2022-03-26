@@ -5,8 +5,8 @@ import { roleColor } from "../util/lechsFunctions";
 
 export default new Event("messageUpdate", async (oldMessage: ExtendedMessage, newMessage: ExtendedMessage) => {
     
-    let oldcontent = oldMessage.content.substring(0, 1045)+'...'
-    let newcontent = newMessage.content.substring(0, 1045)+'...'
+    let oldcontent = oldMessage.content.length>2048 ? oldMessage.content.substring(0, 2045)+'...' : oldMessage.content
+    let newcontent = newMessage.content.length>2048 ? newMessage.content.substring(0, 2045)+'...' : newMessage.content
 
     if(!oldcontent && !newcontent) return
     if(!oldcontent) oldcontent = "**No content (may contains an embed or an attachment)**"
