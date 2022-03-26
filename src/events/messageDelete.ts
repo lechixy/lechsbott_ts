@@ -18,13 +18,13 @@ export default new Event("messageDelete", async (message: ExtendedMessage) => {
 
     if (message.content === "") {
         embed.setDescription(`**No content (may contains an embed or an attachment)**`)
-    } else embed.setDescription(message.content)
+    } else embed.setDescription(message.content.substring(0, 2045)+'...')
 
     if (message.attachments.size !== 0) {
         embed.addField({name: `Attachments`, value: `${message.attachments.map(x => `**${x.name}**\n${x.url}`).join('\n')}`})
     }
 
-    const logc: any = message.guild.channels.cache.find(ch => ch.name === 'lechsbott-log')
+    const logc: any = message.guild.channels.cache.find(ch => ch.name === 'lechsbott-logs')
     if (!logc) return;
     logc.send({ embeds: [embed] }).catch(err => { console.log(err) })
 

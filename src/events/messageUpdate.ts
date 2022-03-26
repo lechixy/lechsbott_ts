@@ -5,8 +5,8 @@ import { roleColor } from "../util/lechsFunctions";
 
 export default new Event("messageUpdate", async (oldMessage: ExtendedMessage, newMessage: ExtendedMessage) => {
     
-    let oldcontent = oldMessage.content
-    let newcontent = newMessage.content
+    let oldcontent = oldMessage.content.substring(0, 1045)+'...'
+    let newcontent = newMessage.content.substring(0, 1045)+'...'
 
     if(!oldcontent && !newcontent) return
     if(!oldcontent) oldcontent = "**No content (may contains an embed or an attachment)**"
@@ -24,7 +24,7 @@ export default new Event("messageUpdate", async (oldMessage: ExtendedMessage, ne
         .addField({name: `User ID`, value: `${newMessage.author.id}`, inline: true})
         .addField({name: `In Channel`, value: `${newMessage.channel}`, inline: true})
         .setTimestamp()
-        const logc: any = newMessage.guild.channels.cache.find(ch => ch.name === 'lechsbott-log')
+        const logc: any = newMessage.guild.channels.cache.find(ch => ch.name === 'lechsbott-logs')
     if (!logc) return;
     logc.send({ embeds: [embed] }).catch(err => {})
 })

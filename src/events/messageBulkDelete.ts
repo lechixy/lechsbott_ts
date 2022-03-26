@@ -33,7 +33,7 @@ export default new Event("messageDeleteBulk", async (messages) => {
         .setThumbnail(mes.author.displayAvatarURL())
         .setTimestamp()
 
-    const logc: any = mes.guild.channels.cache.find(ch => ch.name === 'lechsbott-log')
+    const logc: any = mes.guild.channels.cache.find(ch => ch.name === 'lechsbott-logs')
     if (!logc) return;
     logc.send({ embeds: [embed] });
 })
