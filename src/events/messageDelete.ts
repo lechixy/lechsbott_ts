@@ -18,7 +18,7 @@ export default new Event("messageDelete", async (message: ExtendedMessage) => {
 
     if (message.content === "") {
         embed.setDescription(`**No content (may contains an embed or an attachment)**`)
-    } else embed.setDescription(message.content.length>2048 ? message.content.substring(0, 2045)+'...' : message.content)
+    } else embed.setDescription(message.content.length > 2048 ? message.content.substring(0, 2045)+'...' : message.content)
 
     if (message.attachments.size !== 0) {
         embed.addField({name: `Attachments`, value: `${message.attachments.map(x => `**${x.name}**\n${x.url}`).join('\n')}`})
