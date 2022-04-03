@@ -30,16 +30,9 @@ export class ExtendedClient extends Client {
     constructor() {
         console.log(`Starting the main client for process`)
 
-        let intents = [
-            Discord.GatewayIntentBits.Guilds, Discord.GatewayIntentBits.GuildVoiceStates,
-            Discord.GatewayIntentBits.GuildMembers, Discord.GatewayIntentBits.GuildPresences,
-            Discord.GatewayIntentBits.GuildMessages, Discord.GatewayIntentBits.GuildBans,
-            Discord.GatewayIntentBits.GuildEmojisAndStickers, Discord.GatewayIntentBits.GuildMessageReactions
-        ]
-
         super({
             shards: 'auto',
-            intents: intents,
+            intents: 4063,
         });
     }
 
