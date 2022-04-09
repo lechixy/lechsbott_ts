@@ -1,10 +1,8 @@
 import fetch, { Response } from 'node-fetch';
-// import { client } from '..'
-import Genius from 'genius-lyrics';
-import { GENIUS } from '../config.json'
 import { lyrics } from '../typings/Lyrics'
+import lechs_Genius from './Genius';
 
-const genius = new Genius.Client(GENIUS);
+const genius = new lechs_Genius();
 const lyricsHeader = '</div></div></div></div><div class="hwc"><div class="BNeawe tAd8D AP7Wnd"><div><div class="BNeawe tAd8D AP7Wnd">';
 const lyricsFooter = '</div></div></div></div></div><div><span class="hwc"><div class="BNeawe uEec3 AP7Wnd">';
 const nameHeader = '<span><span class="BNeawe tAd8D AP7Wnd">'
@@ -71,13 +69,13 @@ export default async function getSong(query: string): Promise<Song> {
     }
 
     //gets thumbnail from genius api
-    const geniusSearch = await genius.songs.search(`${rawName}`)
+    const geniusSearch = await genius.search(`${rawName}`)
     let Thumbnail: string = null
 
     for (let i = 0; i < geniusSearch.length; i++) {
-        if (geniusSearch[i].artist.name.toLowerCase() === rawAuthor.toLowerCase()) {
-            if (rawName.toLowerCase() === geniusSearch[i].title.toLowerCase() || geniusSearch[i].featuredTitle.toLowerCase() || geniusSearch[i].fullTitle.toLowerCase()) {
-                Thumbnail = geniusSearch[i].thumbnail
+        if (geniusSearch[i].result.primary_artist.name.toLowerCase() === rawAuthor.toLowerCase()) {
+            if (rawName.toLowerCase() === geniusSearch[i].result.title.toLowerCase() || geniusSearch[i].result.title_with_featured.toLowerCase() || geniusSearch[i].result.full_title.toLowerCase()) {
+                Thumbnail = geniusSearch[i].result.song_art_image_url
                 break;
             } else return
         } else return

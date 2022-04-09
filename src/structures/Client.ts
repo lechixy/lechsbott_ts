@@ -16,6 +16,7 @@ import mongoose from 'mongoose'
 import Genius from 'genius-lyrics'
 import { MONGO_DB_SRV, LECHSBOTTKEY, GENIUS } from '../config.json'
 import { clientUtils } from "../typings/clientUtils";
+import lechs_Genius from "./Genius";
 
 const globPromise = promisify(glob);
 
@@ -24,7 +25,7 @@ export class ExtendedClient extends Client {
     slashCommands: Collection<string, SlashCommandType> = new Collection();
     queue: Collection<string, lechs_Subscription> = new Collection();
     utils: clientUtils = {
-        genius: new Genius.Client(GENIUS),
+        genius: new lechs_Genius(),
     }
 
     constructor() {
@@ -61,7 +62,7 @@ export class ExtendedClient extends Client {
         })
 
         if(errors.length !== 0){
-            console.log(`An error occurred during deploying commands: ${errors.join(', ')}`);
+            console.log(`An error occurred during deploying commands:\n${errors.join('\n')}`);
         }
 
         // else {

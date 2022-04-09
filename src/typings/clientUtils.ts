@@ -1,5 +1,5 @@
-import {Client as GeniusClient} from 'genius-lyrics'
+import lechs_Genius from "../structures/Genius";
 
 export interface clientUtils {
-    genius: GeniusClient,
+    genius: lechs_Genius,
 }
