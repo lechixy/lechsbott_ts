@@ -131,7 +131,7 @@ export class lechs_Subscription {
 				.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
 				.setAuthor({ name: `Added to queue`, iconURL: `${memberavatar}` })
 				.setTitle(`${track.title}`)
-				.setURL(`${track.customurl}`)
+				.setURL(`${track.embed_url}`)
 				.setTimestamp()
 				.setFooter({ text: `${track.addedby.user.username}` });
 
@@ -184,7 +184,7 @@ export class lechs_Subscription {
 					.setColor(Discord.Util.resolveColor(roleColor(this.lastRespond)))
 					.setAuthor({ name: `Now playing`, iconURL: this.lastRespond.user.displayAvatarURL() })
 					.setTitle(`${nextTrack.title}`)
-					.setURL(`${nextTrack.customurl}`)
+					.setURL(`${nextTrack.embed_url}`)
 					.setFooter({ text: `${nextTrack.addedby.user.username}` })
 					.setTimestamp();
 

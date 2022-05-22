@@ -1,5 +1,4 @@
 import { ExtendedClient } from "../structures/Client";
-import * as Discord from 'discord.js'
 import { Message, GuildMember, PermissionResolvable } from "discord.js"
 
 export interface ExtendedMessage extends Message {

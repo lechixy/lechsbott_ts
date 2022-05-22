@@ -1,6 +1,7 @@
 import { Command } from '../../structures/Command'
 import { roleColor } from '../../util/lechsFunctions'
 import Discord from 'discord.js'
+import getSong from '../../structures/Lyrics'
 
 export default new Command({
     name: "spotifylyrics",
@@ -24,7 +25,7 @@ export default new Command({
             let tui = new Discord.Embed()
                 .setColor(Discord.Util.resolveColor('Red'))
                 .setAuthor({ name: `${user.user.username} is not online!`, iconURL: `${user.user.displayAvatarURL()}` })
-                .setDescription(`We can't show you an offline member activities`)
+                .setDescription(`Offline users can't have an activity`)
             return message.channel.send({ embeds: [tui] })
         }
 
@@ -35,7 +36,7 @@ export default new Command({
             let tui = new Discord.Embed()
                 .setColor(Discord.Util.resolveColor('#03fc62'))
                 .setAuthor({ name: `You are not listening Spotify!`, iconURL: `${user.user.displayAvatarURL()}` })
-                .setDescription(`Are you has an activity?`)
+                .setDescription(`Are you have an activity?`)
             return message.channel.send({ embeds: [tui] })
         }
 
@@ -43,7 +44,7 @@ export default new Command({
             let tui = new Discord.Embed()
                 .setColor(Discord.Util.resolveColor('#03fc62'))
                 .setAuthor({ name: `${user.user.username} is not listening Spotify!`, iconURL: `${user.user.displayAvatarURL()}` })
-                .setDescription(`Can you check this user has an activity?`)
+                .setDescription(`This user haven't an activity`)
             return message.channel.send({ embeds: [tui] })
         }
 
@@ -59,8 +60,8 @@ export default new Command({
 
         let title = `${artist} ${name}`
 
-        let api = client.utils.genius
-        let lyrics = await api.songs.search(title).then(x => x[0].lyrics(true))
+        let song = await getSong(title)
+        let lyrics = song?.lyrics
 
         if (!lyrics) {
             let errorembed = new Discord.Embed()
@@ -70,7 +71,8 @@ export default new Command({
         } else {
             let lyricsEmbed = new Discord.Embed()
                 .setColor(Discord.Util.resolveColor(roleColor(message)))
-                .setTitle(`Lyrics of ${artist} - ${name}`)
+                .setTitle(`${artist} - ${name}`)
+                .setURL(url)
                 .setThumbnail(image)
                 .setDescription(`${lyrics.length >= 2048 ? `${lyrics.substring(0, 2045)}...` : `${lyrics}`}`)
                 .setTimestamp()
