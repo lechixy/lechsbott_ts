@@ -1,4 +1,2 @@
-# lechsbott
-can do many things at once...
-
-<3
+# lechsbott_ts
+third copy of lechsbott and written in typescript
